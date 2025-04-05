@@ -5,7 +5,6 @@ on:
     branches:
       - release
 
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,13 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
     
-      - name: Deploy to vps
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }} 
+          port: ${{ secrets.SSH_PORT }}
           script: |
             set -e  
 
@@ -30,12 +29,12 @@ jobs:
             git reset --hard origin/release
 
             echo "🛑 Stopping old containers..."
-            docker compose down
+            docker compose --profile intel down
 
             echo "📦 Building new Docker images..."
-            docker compose build --no-cache
+            docker compose --profile intel build --no-cache
 
-            echo "🚀 Starting new containers using Blue-Green Deployment..."
-            docker compose up -d --remove-orphans
+            echo "🚀 Starting new containers (Intel profile)..."
+            docker compose --profile intel up -d --remove-orphans
 
             echo "✅ Deployment completed successfully!"
