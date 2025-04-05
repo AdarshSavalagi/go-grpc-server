@@ -1,0 +1,106 @@
+version: "3.7"
+
+services:
+  # ZooKeeper Cluster
+  zookeeper1:
+    image: zookeeper:3.7
+    container_name: zookeeper1
+    hostname: zookeeper1
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: |
+        server.1=zookeeper1:2888:3888;2181 
+        server.2=zookeeper2:2888:3888;2181 
+        server.3=zookeeper3:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 30s
+      retries: 3
+
+  zookeeper2:
+    image: zookeeper:3.7
+    container_name: zookeeper2
+    hostname: zookeeper2
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: |
+        server.1=zookeeper1:2888:3888;2181
+        server.2=zookeeper2:2888:3888;2181
+        server.3=zookeeper3:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 30s
+      retries: 3
+
+  zookeeper3:
+    image: zookeeper:3.7
+    container_name: zookeeper3
+    hostname: zookeeper3
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: |
+        server.1=zookeeper1:2888:3888;2181
+        server.2=zookeeper2:2888:3888;2181
+        server.3=zookeeper3:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 30s
+      retries: 3
+
+  # Kafka Broker
+  kafka:
+    image: bitnami/kafka:3.7.0 # ARM-compatible Kafka image
+    container_name: kafka
+    hostname: kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CFG_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9093
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_CFG_NUM_PARTITIONS: 3
+      KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: 3
+      ALLOW_PLAINTEXT_LISTENER: "yes" # Required for Bitnami image
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      interval: 30s
+      retries: 3
+
+  # gRPC Server
+  grpc-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: grpc-server
+    ports:
+      - "50051:50051"  # Expose only gRPC port
+    environment:
+      KAFKA_BROKER: "kafka:9092"
+      KAFKA_TOPIC: "logs"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-net
+    mem_limit: 1g  # Set memory limit to 1GB
+
+networks:
+  kafka-net:
+    driver: bridge

@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package log;
+
+import "google/protobuf/timestamp.proto";  // For timeStamp field
+
+// Option to specify the Go package
+option go_package = "github.com/adarsh-devappsys/go-grpc-server/grpc-kafka-server/internal/grpc/proto;proto"; // Change to your Go package path
+
+// Enum for log levels
+enum LogLevel {
+    VERBOSE = 0;
+    DEBUG = 1;
+    INFO = 2;
+    WARN = 3;
+    ERROR = 4;
+    FATAL = 5;
+}
+
+// LogEvent message definition
+message LogEvent {
+    string logID = 1;                       // Unique log ID, could be UUID
+    string mnemonic = 2;                    // Short identifier (optional purpose marker)
+
+    // Device Info
+    string deviceID = 3;                    // Device ID
+    string deviceName = 4;                  // Device Name
+    string deviceModel = 5;                 // Device Model
+    string deviceOS = 6;                    // Device OS
+    string deviceOSVersion = 7;             // Device OS Version
+
+    // App Info
+    string appVersion = 8;                  // App Version
+    string appName = 9;                     // App Name
+    string appPackageName = 10;             // App Package Name
+
+    // Log Content
+    string logMessage = 11;                 // Log Message
+    LogLevel logLevel = 12;                 // Log Level
+    string stackTrace = 13;                 // Stack Trace (optional)
+
+    // Metadata
+    google.protobuf.Timestamp timeStamp = 14; // Timestamp of the event
+    string sessionID = 15;                  // Session ID
+    string userID = 16;                     // User ID
+    string networkStatus = 17;              // Network Status (e.g., "Online", "Offline")
+    string location = 18;                   // Location (e.g., "New York", "San Francisco")
+
+    // Custom fields for extensibility
+    map<string, string> customAttributes = 19; // Custom key-value attributes
+}
+
+// LogResponse message definition
+message LogResponse {
+    bool success = 1;                        // Indicates whether the log was successfully processed
+    string message = 2;                      // Additional information (optional)
+}
+
+// Define the LogService with RPC methods
+service LogService {
+    // RPC method to upload a log event
+    rpc UploadLog (LogEvent) returns (LogResponse);
+}
