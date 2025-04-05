@@ -1,4 +1,4 @@
-name: Deploy Angular App to Primary Server
+name: Deploy GRPC Logs Server to VPS
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
             set -e  
 
             echo "🔄 Pulling latest changes..."
-            cd /home/github-actions/projects/go-grpc-logs-server
+            cd /home/github-actions/projects/go-grpc-server
             git fetch origin release
             git reset --hard origin/release
 
