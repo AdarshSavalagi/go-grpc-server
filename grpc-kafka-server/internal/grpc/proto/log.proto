@@ -4,60 +4,67 @@ package log;
 
 import "google/protobuf/timestamp.proto";  // For timeStamp field
 
-// Option to specify the Go package
-option go_package = "github.com/adarsh-devappsys/go-grpc-server/grpc-kafka-server/internal/grpc/proto;proto"; // Change to your Go package path
+option go_package = "github.com/adarsh-devappsys/go-grpc-server/grpc-kafka-server/internal/grpc/proto;proto";
 
 // Enum for log levels
 enum LogLevel {
-    VERBOSE = 0;
-    DEBUG = 1;
-    INFO = 2;
-    WARN = 3;
-    ERROR = 4;
-    FATAL = 5;
+  VERBOSE = 0;
+  DEBUG = 1;
+  INFO = 2;
+  WARN = 3;
+  ERROR = 4;
+  FATAL = 5;
 }
 
 // LogEvent message definition
 message LogEvent {
-    string logID = 1;                       // Unique log ID, could be UUID
-    string mnemonic = 2;                    // Short identifier (optional purpose marker)
+  string logID = 1;
+  string mnemonic = 2;
 
-    // Device Info
-    string deviceID = 3;                    // Device ID
-    string deviceName = 4;                  // Device Name
-    string deviceModel = 5;                 // Device Model
-    string deviceOS = 6;                    // Device OS
-    string deviceOSVersion = 7;             // Device OS Version
+  // Device Info
+  string deviceID = 3;
+  string deviceName = 4;
+  string deviceModel = 5;
+  string deviceOS = 6;
+  string deviceOSVersion = 7;
 
-    // App Info
-    string appVersion = 8;                  // App Version
-    string appName = 9;                     // App Name
-    string appPackageName = 10;             // App Package Name
+  // App Info
+  string appVersion = 8;
+  string appName = 9;
+  string appPackageName = 10;
 
-    // Log Content
-    string logMessage = 11;                 // Log Message
-    LogLevel logLevel = 12;                 // Log Level
-    string stackTrace = 13;                 // Stack Trace (optional)
+  // Log Content
+  string logMessage = 11;
+  LogLevel logLevel = 12;
+  string stackTrace = 13;
 
-    // Metadata
-    google.protobuf.Timestamp timeStamp = 14; // Timestamp of the event
-    string sessionID = 15;                  // Session ID
-    string userID = 16;                     // User ID
-    string networkStatus = 17;              // Network Status (e.g., "Online", "Offline")
-    string location = 18;                   // Location (e.g., "New York", "San Francisco")
+  // Metadata
+  google.protobuf.Timestamp timeStamp = 14;
+  string sessionID = 15;
+  string userID = 16;
+  string networkStatus = 17;
+  string location = 18;
 
-    // Custom fields for extensibility
-    map<string, string> customAttributes = 19; // Custom key-value attributes
+  // Custom fields for extensibility
+  map<string, string> customAttributes = 19;
 }
 
-// LogResponse message definition
+// Response for single or bulk log upload
 message LogResponse {
-    bool success = 1;                        // Indicates whether the log was successfully processed
-    string message = 2;                      // Additional information (optional)
+  bool success = 1;
+  string message = 2;
+}
+
+// Bulk upload request
+message BulkLogRequest {
+  repeated LogEvent logs = 1;
 }
 
 // Define the LogService with RPC methods
 service LogService {
-    // RPC method to upload a log event
-    rpc UploadLog (LogEvent) returns (LogResponse);
+  // RPC method to upload a single log event
+  rpc UploadLog (LogEvent) returns (LogResponse);
+
+  // RPC method to upload multiple log events at once
+  rpc UploadLogs (BulkLogRequest) returns (LogResponse);
 }

@@ -23,7 +23,7 @@ func StartGRPCServer() {
 
 	// Register the LogService handler with the gRPC server
 	proto.RegisterLogServiceServer(srv, &handlers.LogServiceHandler{})
-	
+
 	// Start the gRPC server
 	log.Println("gRPC server running on port 50051...")
 	if err := srv.Serve(listener); err != nil {

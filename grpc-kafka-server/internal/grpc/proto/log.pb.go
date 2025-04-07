@@ -84,30 +84,30 @@ func (LogLevel) EnumDescriptor() ([]byte, []int) {
 // LogEvent message definition
 type LogEvent struct {
 	state    protoimpl.MessageState `protogen:"open.v1"`
-	LogID    string                 `protobuf:"bytes,1,opt,name=logID,proto3" json:"logID,omitempty"`       // Unique log ID, could be UUID
-	Mnemonic string                 `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"` // Short identifier (optional purpose marker)
+	LogID    string                 `protobuf:"bytes,1,opt,name=logID,proto3" json:"logID,omitempty"`
+	Mnemonic string                 `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"`
 	// Device Info
-	DeviceID        string `protobuf:"bytes,3,opt,name=deviceID,proto3" json:"deviceID,omitempty"`               // Device ID
-	DeviceName      string `protobuf:"bytes,4,opt,name=deviceName,proto3" json:"deviceName,omitempty"`           // Device Name
-	DeviceModel     string `protobuf:"bytes,5,opt,name=deviceModel,proto3" json:"deviceModel,omitempty"`         // Device Model
-	DeviceOS        string `protobuf:"bytes,6,opt,name=deviceOS,proto3" json:"deviceOS,omitempty"`               // Device OS
-	DeviceOSVersion string `protobuf:"bytes,7,opt,name=deviceOSVersion,proto3" json:"deviceOSVersion,omitempty"` // Device OS Version
+	DeviceID        string `protobuf:"bytes,3,opt,name=deviceID,proto3" json:"deviceID,omitempty"`
+	DeviceName      string `protobuf:"bytes,4,opt,name=deviceName,proto3" json:"deviceName,omitempty"`
+	DeviceModel     string `protobuf:"bytes,5,opt,name=deviceModel,proto3" json:"deviceModel,omitempty"`
+	DeviceOS        string `protobuf:"bytes,6,opt,name=deviceOS,proto3" json:"deviceOS,omitempty"`
+	DeviceOSVersion string `protobuf:"bytes,7,opt,name=deviceOSVersion,proto3" json:"deviceOSVersion,omitempty"`
 	// App Info
-	AppVersion     string `protobuf:"bytes,8,opt,name=appVersion,proto3" json:"appVersion,omitempty"`          // App Version
-	AppName        string `protobuf:"bytes,9,opt,name=appName,proto3" json:"appName,omitempty"`                // App Name
-	AppPackageName string `protobuf:"bytes,10,opt,name=appPackageName,proto3" json:"appPackageName,omitempty"` // App Package Name
+	AppVersion     string `protobuf:"bytes,8,opt,name=appVersion,proto3" json:"appVersion,omitempty"`
+	AppName        string `protobuf:"bytes,9,opt,name=appName,proto3" json:"appName,omitempty"`
+	AppPackageName string `protobuf:"bytes,10,opt,name=appPackageName,proto3" json:"appPackageName,omitempty"`
 	// Log Content
-	LogMessage string   `protobuf:"bytes,11,opt,name=logMessage,proto3" json:"logMessage,omitempty"`                // Log Message
-	LogLevel   LogLevel `protobuf:"varint,12,opt,name=logLevel,proto3,enum=log.LogLevel" json:"logLevel,omitempty"` // Log Level
-	StackTrace string   `protobuf:"bytes,13,opt,name=stackTrace,proto3" json:"stackTrace,omitempty"`                // Stack Trace (optional)
+	LogMessage string   `protobuf:"bytes,11,opt,name=logMessage,proto3" json:"logMessage,omitempty"`
+	LogLevel   LogLevel `protobuf:"varint,12,opt,name=logLevel,proto3,enum=log.LogLevel" json:"logLevel,omitempty"`
+	StackTrace string   `protobuf:"bytes,13,opt,name=stackTrace,proto3" json:"stackTrace,omitempty"`
 	// Metadata
-	TimeStamp     *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=timeStamp,proto3" json:"timeStamp,omitempty"`         // Timestamp of the event
-	SessionID     string                 `protobuf:"bytes,15,opt,name=sessionID,proto3" json:"sessionID,omitempty"`         // Session ID
-	UserID        string                 `protobuf:"bytes,16,opt,name=userID,proto3" json:"userID,omitempty"`               // User ID
-	NetworkStatus string                 `protobuf:"bytes,17,opt,name=networkStatus,proto3" json:"networkStatus,omitempty"` // Network Status (e.g., "Online", "Offline")
-	Location      string                 `protobuf:"bytes,18,opt,name=location,proto3" json:"location,omitempty"`           // Location (e.g., "New York", "San Francisco")
+	TimeStamp     *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=timeStamp,proto3" json:"timeStamp,omitempty"`
+	SessionID     string                 `protobuf:"bytes,15,opt,name=sessionID,proto3" json:"sessionID,omitempty"`
+	UserID        string                 `protobuf:"bytes,16,opt,name=userID,proto3" json:"userID,omitempty"`
+	NetworkStatus string                 `protobuf:"bytes,17,opt,name=networkStatus,proto3" json:"networkStatus,omitempty"`
+	Location      string                 `protobuf:"bytes,18,opt,name=location,proto3" json:"location,omitempty"`
 	// Custom fields for extensibility
-	CustomAttributes map[string]string `protobuf:"bytes,19,rep,name=customAttributes,proto3" json:"customAttributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // Custom key-value attributes
+	CustomAttributes map[string]string `protobuf:"bytes,19,rep,name=customAttributes,proto3" json:"customAttributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -275,11 +275,11 @@ func (x *LogEvent) GetCustomAttributes() map[string]string {
 	return nil
 }
 
-// LogResponse message definition
+// Response for single or bulk log upload
 type LogResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // Indicates whether the log was successfully processed
-	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`  // Additional information (optional)
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -328,6 +328,51 @@ func (x *LogResponse) GetMessage() string {
 	return ""
 }
 
+// Bulk upload request
+type BulkLogRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Logs          []*LogEvent            `protobuf:"bytes,1,rep,name=logs,proto3" json:"logs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BulkLogRequest) Reset() {
+	*x = BulkLogRequest{}
+	mi := &file_log_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BulkLogRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BulkLogRequest) ProtoMessage() {}
+
+func (x *BulkLogRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_log_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BulkLogRequest.ProtoReflect.Descriptor instead.
+func (*BulkLogRequest) Descriptor() ([]byte, []int) {
+	return file_log_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *BulkLogRequest) GetLogs() []*LogEvent {
+	if x != nil {
+		return x.Logs
+	}
+	return nil
+}
+
 var File_log_proto protoreflect.FileDescriptor
 
 const file_log_proto_rawDesc = "" +
@@ -367,17 +412,21 @@ const file_log_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"A\n" +
 	"\vLogResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage*L\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"3\n" +
+	"\x0eBulkLogRequest\x12!\n" +
+	"\x04logs\x18\x01 \x03(\v2\r.log.LogEventR\x04logs*L\n" +
 	"\bLogLevel\x12\v\n" +
 	"\aVERBOSE\x10\x00\x12\t\n" +
 	"\x05DEBUG\x10\x01\x12\b\n" +
 	"\x04INFO\x10\x02\x12\b\n" +
 	"\x04WARN\x10\x03\x12\t\n" +
 	"\x05ERROR\x10\x04\x12\t\n" +
-	"\x05FATAL\x10\x052:\n" +
+	"\x05FATAL\x10\x052o\n" +
 	"\n" +
 	"LogService\x12,\n" +
-	"\tUploadLog\x12\r.log.LogEvent\x1a\x10.log.LogResponseBXZVgithub.com/adarsh-devappsys/go-grpc-server/grpc-kafka-server/internal/grpc/proto;protob\x06proto3"
+	"\tUploadLog\x12\r.log.LogEvent\x1a\x10.log.LogResponse\x123\n" +
+	"\n" +
+	"UploadLogs\x12\x13.log.BulkLogRequest\x1a\x10.log.LogResponseBXZVgithub.com/adarsh-devappsys/go-grpc-server/grpc-kafka-server/internal/grpc/proto;protob\x06proto3"
 
 var (
 	file_log_proto_rawDescOnce sync.Once
@@ -392,25 +441,29 @@ func file_log_proto_rawDescGZIP() []byte {
 }
 
 var file_log_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_log_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_log_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_log_proto_goTypes = []any{
 	(LogLevel)(0),                 // 0: log.LogLevel
 	(*LogEvent)(nil),              // 1: log.LogEvent
 	(*LogResponse)(nil),           // 2: log.LogResponse
-	nil,                           // 3: log.LogEvent.CustomAttributesEntry
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*BulkLogRequest)(nil),        // 3: log.BulkLogRequest
+	nil,                           // 4: log.LogEvent.CustomAttributesEntry
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_log_proto_depIdxs = []int32{
 	0, // 0: log.LogEvent.logLevel:type_name -> log.LogLevel
-	4, // 1: log.LogEvent.timeStamp:type_name -> google.protobuf.Timestamp
-	3, // 2: log.LogEvent.customAttributes:type_name -> log.LogEvent.CustomAttributesEntry
-	1, // 3: log.LogService.UploadLog:input_type -> log.LogEvent
-	2, // 4: log.LogService.UploadLog:output_type -> log.LogResponse
-	4, // [4:5] is the sub-list for method output_type
-	3, // [3:4] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	5, // 1: log.LogEvent.timeStamp:type_name -> google.protobuf.Timestamp
+	4, // 2: log.LogEvent.customAttributes:type_name -> log.LogEvent.CustomAttributesEntry
+	1, // 3: log.BulkLogRequest.logs:type_name -> log.LogEvent
+	1, // 4: log.LogService.UploadLog:input_type -> log.LogEvent
+	3, // 5: log.LogService.UploadLogs:input_type -> log.BulkLogRequest
+	2, // 6: log.LogService.UploadLog:output_type -> log.LogResponse
+	2, // 7: log.LogService.UploadLogs:output_type -> log.LogResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_log_proto_init() }
@@ -424,7 +477,7 @@ func file_log_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_log_proto_rawDesc), len(file_log_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
