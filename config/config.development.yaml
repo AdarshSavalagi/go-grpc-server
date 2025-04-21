@@ -1,0 +1,28 @@
+name: logs-grpc-server
+description: Logs GRPC server
+owner: DevAppSys
+
+server:
+  port: 50051
+
+kafka:
+  brokers:
+    - "kafka:9092"  # Overridden by env var (KAFKA_BROKERS)
+  client_id: "golang-log-service"
+  acks: "all"
+  async: false
+  retry_attempts: 3
+  write_timeout: 10
+  read_timeout: 10
+
+  topics:
+    logs: "logs"
+    events: "events"
+    context: "context"
+  
+  # SASL Authentication (optional)
+  enable_tls: false
+  enable_sasl: false
+  sasl_user: ""  # Overridden by env var (KAFKA_SASL_USER)
+  sasl_password: ""  # Overridden by env var (KAFKA_SASL_PASSWORD)
+  sasl_mechanism: ""  # Overridden by env var (KAFKA_SASL_MECHANISM)

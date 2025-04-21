@@ -1,96 +1,44 @@
 package kafka_util
 
 import (
-	"context"
-	"log"
-	"net"
-	"os"
-	"strconv"
+	"logs-grpc-server/grpc-kafka-server/internal/grpc/config"
+	"time"
 
 	"github.com/segmentio/kafka-go"
 )
 
-var (
-	writer *kafka.Writer
-)
+func InitKafkaWriters(cfg *config.TKafkaConfig) (map[string]*kafka.Writer, error) {
+	writers := make(map[string]*kafka.Writer)
 
-func Init() {
-	kafkaBroker := getKafkaBroker()
-	topic := getKafkaTopic()
-
-	log.Printf("Initializing Kafka writer with broker: %s, topic: %s", kafkaBroker, topic)
-
-	// First ensure topic exists
-	if err := ensureTopicExists(kafkaBroker, topic); err != nil {
-		log.Printf("WARNING: Could not verify topic exists: %v", err)
+	// Map Acks string to Kafka RequiredAcks enum
+	ack, ok := map[string]kafka.RequiredAcks{
+		"none": kafka.RequireNone,
+		"one":  kafka.RequireOne,
+		"all":  kafka.RequireAll,
+	}[cfg.Acks]
+	if !ok {
+		ack = kafka.RequireAll
 	}
 
-	writer = &kafka.Writer{
-		Addr:                   kafka.TCP(kafkaBroker),
-		Topic:                  topic,
-		Balancer:               &kafka.LeastBytes{},
-		BatchSize:              1,
-		RequiredAcks:           kafka.RequireOne,
-		AllowAutoTopicCreation: true,
-		MaxAttempts:            3,
+	// Create Kafka writers for each topic
+	for name, topic := range cfg.Topics {
+		writer := &kafka.Writer{
+			Addr:         kafka.TCP(cfg.Brokers...), // Use the brokers from the config
+			Topic:        topic,
+			Balancer:     &kafka.LeastBytes{},
+			RequiredAcks: ack,
+			Async:        cfg.Async,
+			WriteTimeout: time.Second * time.Duration(cfg.WriteTimeout),
+			ReadTimeout:  time.Second * time.Duration(cfg.ReadTimeout),
+		}
+		writers[name] = writer
 	}
+
+	return writers, nil
 }
 
-func ensureTopicExists(broker, topic string) error {
-	conn, err := kafka.Dial("tcp", broker)
-	if err != nil {
-		return err
+func NewKafkaMessage(value []byte) kafka.Message {
+	return kafka.Message{
+		Value: value,
 	}
-	defer conn.Close()
-
-	controller, err := conn.Controller()
-	if err != nil {
-		return err
-	}
-
-	controllerConn, err := kafka.Dial("tcp", net.JoinHostPort(controller.Host, strconv.Itoa(controller.Port)))
-	if err != nil {
-		return err
-	}
-	defer controllerConn.Close()
-
-	topicConfigs := []kafka.TopicConfig{
-		{
-			Topic:             topic,
-			NumPartitions:     3,
-			ReplicationFactor: 1,
-		},
-	}
-
-	return controllerConn.CreateTopics(topicConfigs...)
-}
-
-func SendToKafka(ctx context.Context, message []byte) error {
-	log.Printf("Attempting to send message to Kafka topic: %s", writer.Topic)
-
-	err := writer.WriteMessages(ctx, kafka.Message{
-		Value: message,
-	})
-
-	if err != nil {
-		log.Printf("Failed to write message to Kafka: %v", err)
-		return err
-	}
-
-	log.Println("Message successfully sent to Kafka")
-	return nil
-}
-
-func getKafkaBroker() string {
-	if broker := os.Getenv("KAFKA_BROKER"); broker != "" {
-		return broker
-	}
-	return "kafka:9092"
-}
-
-func getKafkaTopic() string {
-	if topic := os.Getenv("KAFKA_TOPIC"); topic != "" {
-		return topic
-	}
-	return "logs"
 }
