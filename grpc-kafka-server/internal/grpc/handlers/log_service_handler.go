@@ -20,32 +20,32 @@ type LogServiceHandler struct {
 
 // UploadLog handles single log upload
 func (h *LogServiceHandler) UploadLog(ctx context.Context, req *proto.LogEvent) (*proto.LogResponse, error) {
-	log.Printf("Received log event: ID=%s, Source=%s, AppName=%s", req.LogID, req.DeviceID, req.AppName)
+	// log.Printf("Received log event: ID=%s, Source=%s, AppName=%s", req.LogID, req.DeviceID, req.AppName)
 
-	writer, ok := h.KafkaWriters["logs"]
-	if !ok {
-		log.Printf("❌ Kafka writer not found for topic 'logs'")
-		return nil, errors.New("kafka writer not found for topic 'logs'")
-	}
+	// writer, ok := h.KafkaWriters["logs"]
+	// if !ok {
+	// 	log.Printf("❌ Kafka writer not found for topic 'logs'")
+	// 	return nil, errors.New("kafka writer not found for topic 'logs'")
+	// }
 
-	// Serialize the log event using protobuf (binary format)
-	logData, err := protobuf.Marshal(req) // Using protobuf's Marshal function
-	if err != nil {
-		log.Printf("❌ Failed to serialize log event: %v", err)
-		return nil, err
-	}
+	// // Serialize the log event using protobuf (binary format)
+	// logData, err := protobuf.Marshal(req) // Using protobuf's Marshal function
+	// if err != nil {
+	// 	log.Printf("❌ Failed to serialize log event: %v", err)
+	// 	return nil, err
+	// }
 
-	// Send the serialized log to Kafka
-	err = writer.WriteMessages(ctx, kafka.Message{
-		Value: logData, // Send the protobuf-encoded log event
-	})
-	if err != nil {
-		log.Printf("❌ Failed to send log to Kafka: %v", err)
-		return nil, err
-	}
+	// // Send the serialized log to Kafka
+	// err = writer.WriteMessages(ctx, kafka.Message{
+	// 	Value: logData, // Send the protobuf-encoded log event
+	// })
+	// if err != nil {
+	// 	log.Printf("❌ Failed to send log to Kafka: %v", err)
+	// 	return nil, err
+	// }
 
-	// Respond to client
-	log.Printf("✅ Log uploaded successfully: %s", req.LogID)
+	// // Respond to client
+	// log.Printf("✅ Log uploaded successfully: %s", req.LogID)
 	return &proto.LogResponse{
 		Success: true,
 		Message: "Log uploaded successfully",
