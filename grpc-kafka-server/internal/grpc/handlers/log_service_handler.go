@@ -4,8 +4,9 @@ import (
 	"context"
 	"log"
 	"logs-grpc-server/grpc-kafka-server/internal/grpc/proto"
-	// Kafka utility functions
-	// Aliased protobuf library
+	kafka_util "logs-grpc-server/grpc-kafka-server/internal/kafka_util" // Alias kafka_util
+
+	googleProto "google.golang.org/protobuf/proto" // Alias for the `proto` package
 )
 
 // LogServiceHandler implements the LogServiceServer interface
@@ -41,36 +42,36 @@ func (h *LogServiceHandler) UploadLog(ctx context.Context, req *proto.LogEvent) 
 func (h *LogServiceHandler) UploadLogs(ctx context.Context, req *proto.BulkLogRequest) (*proto.LogResponse, error) {
 	log.Printf("📦 Received bulk log request with %d log(s)", len(req.Logs))
 
-	// var failedCount int
+	var failedCount int
 
-	// for i, logEvent := range req.Logs {
-	// 	log.Printf("➡️ Processing log %d: ID=%s, Source=%s", i+1, logEvent.LogID, logEvent.AppName)
+	for i, logEvent := range req.Logs {
+		log.Printf("➡️ Processing log %d: ID=%s, Source=%s", i+1, logEvent.LogID, logEvent.AppName)
 
-	// 	// Serialize each log event individually
-	// 	data, err := googleProto.Marshal(logEvent)
-	// 	if err != nil {
-	// 		log.Printf("❌ Failed to serialize log at index %d: %v", i, err)
-	// 		failedCount++
-	// 		continue
-	// 	}
+		// Serialize each log event individually
+		data, err := googleProto.Marshal(logEvent)
+		if err != nil {
+			log.Printf("❌ Failed to serialize log at index %d: %v", i, err)
+			failedCount++
+			continue
+		}
 
-	// 	// Send to Kafka
-	// 	if err := kafka_util.SendToKafka(ctx, data); err != nil {
-	// 		log.Printf("❌ Failed to send log to Kafka at index %d: %v", i, err)
-	// 		failedCount++
-	// 		continue
-	// 	}
-	// }
+		// Send to Kafka
+		if err := kafka_util.SendToKafka(ctx, data); err != nil {
+			log.Printf("❌ Failed to send log to Kafka at index %d: %v", i, err)
+			failedCount++
+			continue
+		}
+	}
 
-	// // Final response based on result
-	// if failedCount > 0 {
-	// 	msg := "Some logs failed to process"
-	// 	log.Printf("⚠️ %d log(s) failed to process", failedCount)
-	// 	return &proto.LogResponse{
-	// 		Success: false,
-	// 		Message: msg,
-	// 	}, nil
-	// }
+	// Final response based on result
+	if failedCount > 0 {
+		msg := "Some logs failed to process"
+		log.Printf("⚠️ %d log(s) failed to process", failedCount)
+		return &proto.LogResponse{
+			Success: false,
+			Message: msg,
+		}, nil
+	}
 
 	log.Println("✅ All logs uploaded successfully")
 	return &proto.LogResponse{
