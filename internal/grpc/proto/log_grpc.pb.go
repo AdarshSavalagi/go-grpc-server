@@ -4,7 +4,7 @@
 // - protoc             v5.29.3
 // source: log.proto
 
-package proto
+package log
 
 import (
 	context "context"
@@ -19,20 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LogService_UploadLog_FullMethodName  = "/log.LogService/UploadLog"
-	LogService_UploadLogs_FullMethodName = "/log.LogService/UploadLogs"
+	LogService_SendLog_FullMethodName = "/log.LogService/SendLog"
 )
 
 // LogServiceClient is the client API for LogService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// Define the LogService with RPC methods
 type LogServiceClient interface {
-	// RPC method to upload a single log event
-	UploadLog(ctx context.Context, in *LogEvent, opts ...grpc.CallOption) (*LogResponse, error)
-	// RPC method to upload multiple log events at once
-	UploadLogs(ctx context.Context, in *BulkLogRequest, opts ...grpc.CallOption) (*LogResponse, error)
+	SendLog(ctx context.Context, in *LogMessage, opts ...grpc.CallOption) (*Response, error)
 }
 
 type logServiceClient struct {
@@ -43,20 +37,10 @@ func NewLogServiceClient(cc grpc.ClientConnInterface) LogServiceClient {
 	return &logServiceClient{cc}
 }
 
-func (c *logServiceClient) UploadLog(ctx context.Context, in *LogEvent, opts ...grpc.CallOption) (*LogResponse, error) {
+func (c *logServiceClient) SendLog(ctx context.Context, in *LogMessage, opts ...grpc.CallOption) (*Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LogResponse)
-	err := c.cc.Invoke(ctx, LogService_UploadLog_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *logServiceClient) UploadLogs(ctx context.Context, in *BulkLogRequest, opts ...grpc.CallOption) (*LogResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LogResponse)
-	err := c.cc.Invoke(ctx, LogService_UploadLogs_FullMethodName, in, out, cOpts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, LogService_SendLog_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,13 +50,8 @@ func (c *logServiceClient) UploadLogs(ctx context.Context, in *BulkLogRequest, o
 // LogServiceServer is the server API for LogService service.
 // All implementations must embed UnimplementedLogServiceServer
 // for forward compatibility.
-//
-// Define the LogService with RPC methods
 type LogServiceServer interface {
-	// RPC method to upload a single log event
-	UploadLog(context.Context, *LogEvent) (*LogResponse, error)
-	// RPC method to upload multiple log events at once
-	UploadLogs(context.Context, *BulkLogRequest) (*LogResponse, error)
+	SendLog(context.Context, *LogMessage) (*Response, error)
 	mustEmbedUnimplementedLogServiceServer()
 }
 
@@ -83,11 +62,8 @@ type LogServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLogServiceServer struct{}
 
-func (UnimplementedLogServiceServer) UploadLog(context.Context, *LogEvent) (*LogResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadLog not implemented")
-}
-func (UnimplementedLogServiceServer) UploadLogs(context.Context, *BulkLogRequest) (*LogResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadLogs not implemented")
+func (UnimplementedLogServiceServer) SendLog(context.Context, *LogMessage) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendLog not implemented")
 }
 func (UnimplementedLogServiceServer) mustEmbedUnimplementedLogServiceServer() {}
 func (UnimplementedLogServiceServer) testEmbeddedByValue()                    {}
@@ -110,38 +86,20 @@ func RegisterLogServiceServer(s grpc.ServiceRegistrar, srv LogServiceServer) {
 	s.RegisterService(&LogService_ServiceDesc, srv)
 }
 
-func _LogService_UploadLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LogEvent)
+func _LogService_SendLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LogServiceServer).UploadLog(ctx, in)
+		return srv.(LogServiceServer).SendLog(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LogService_UploadLog_FullMethodName,
+		FullMethod: LogService_SendLog_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LogServiceServer).UploadLog(ctx, req.(*LogEvent))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LogService_UploadLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BulkLogRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LogServiceServer).UploadLogs(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LogService_UploadLogs_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LogServiceServer).UploadLogs(ctx, req.(*BulkLogRequest))
+		return srv.(LogServiceServer).SendLog(ctx, req.(*LogMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -154,12 +112,8 @@ var LogService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UploadLog",
-			Handler:    _LogService_UploadLog_Handler,
-		},
-		{
-			MethodName: "UploadLogs",
-			Handler:    _LogService_UploadLogs_Handler,
+			MethodName: "SendLog",
+			Handler:    _LogService_SendLog_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

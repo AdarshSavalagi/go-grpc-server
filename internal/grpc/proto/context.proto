@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package log;
+option go_package = "go-grpc-server/internal/grpc/proto;log";
+service ContextService {
+  rpc SendContext (Context) returns (Response);
+}
+
+message Context {
+  string deviceID = 1;
+  string appVersion = 2;
+  string appPackageName = 3;
+  string userID = 4;
+  string sessionID = 5;
+  string language = 6;
+  string networkStatus = 7;
+  string location = 8;
+  string ipAddress = 9;
+  bool isRooted = 10;
+}
+
+message Response {
+  string message = 1;
+  bool success = 2;
+}

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package log;
+option go_package = "go-grpc-server/internal/grpc/proto;log";
+import "google/protobuf/timestamp.proto";
+
+
+
+service EventService {
+  rpc SendEvent (EventMessage) returns (Response);
+}
+
+message Response {
+  string status = 1;
+  string message = 2;
+}
+
+message EventMessage {
+  string eventID = 1;
+
+  string eventName = 3;
+  string screenName = 4;
+
+  google.protobuf.Timestamp eventTime = 5;
+
+  bool appOpened = 6;
+  bool appBackgrounded = 7;
+  bool sessionStarted = 8;
+  bool sessionEnded = 9;
+
+  double latitude = 10;
+  double longitude = 11;
+  string city = 12;
+  string region = 13;
+  string country = 14;
+  string carrier = 15;
+
+  bool dynamicConfigChanged = 16;
+
+  map<string, string> customAttributes = 17;
+}

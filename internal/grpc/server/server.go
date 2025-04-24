@@ -1,7 +1,7 @@
 package server
 
 import (
-	"logs-grpc-server/grpc-kafka-server/internal/grpc/config"
+	"logs-grpc-server/internal/grpc/config"
 
 	"google.golang.org/grpc"
 )
@@ -10,5 +10,5 @@ func InitGRPCServer(config *config.Config) (*grpc.Server, error) {
 	// Initialize the gRPC server
 	srv := grpc.NewServer()
 	return srv, nil
-	
+
 }

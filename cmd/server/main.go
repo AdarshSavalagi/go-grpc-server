@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"logs-grpc-server/grpc-kafka-server/internal/grpc"
+	"logs-grpc-server/internal/grpc"
 	"os"
 	"os/signal"
 	"syscall"

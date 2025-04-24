@@ -22,8 +22,8 @@ services:
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     volumes:
       - kafka_data:/bitnami/kafka
-    networks:
-      - kafka-net
+    # networks:
+    #   - kafka-net
 
   ## -------------------------------
   ## ✅ Go gRPC Server 

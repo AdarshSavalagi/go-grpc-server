@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package log;
+option go_package = "go-grpc-server/internal/grpc/proto;log";
+import "google/protobuf/timestamp.proto";
+
+
+
+enum LogLevel {
+  DEBUG = 0;
+  INFO = 1;
+  WARN = 2;
+  ERROR =3;
+}
+
+message Response {
+  string status = 1;
+  string message = 2;
+}
+
+enum LogType {
+  UNKNOWN = 0;
+  NON_FATAL = 1;
+  FATAL_CRASH = 2;
+}
+
+message LogMessage {
+  string logID = 1;
+
+  LogLevel level = 3;
+  LogType type = 4;
+  string message = 5;
+  string stackTrace = 6;
+  string sessionID = 7;
+
+  google.protobuf.Timestamp loggedAt = 8;
+
+  double freeRAMMB = 9;
+  double freeStorageMB = 10;
+  string deviceModel = 11;
+  string deviceOS = 12;
+  string deviceOSVersion = 13;
+}
+
+
+service LogService {
+  rpc SendLog (LogMessage) returns (Response);
+}

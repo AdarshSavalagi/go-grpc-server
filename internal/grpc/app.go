@@ -1,13 +1,13 @@
 package grpc
 
 import (
-	"logs-grpc-server/grpc-kafka-server/internal/grpc/config"
-	"logs-grpc-server/grpc-kafka-server/internal/grpc/server"
-	"logs-grpc-server/grpc-kafka-server/internal/kafka_util"
+	"logs-grpc-server/internal/grpc/config"
+	"logs-grpc-server/internal/grpc/server"
+	"logs-grpc-server/internal/kafka_util"
 	"net"
 	"strconv"
 
-	"github.com/segmentio/kafka-go"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
@@ -16,7 +16,7 @@ type App struct {
 	Config      *config.Config
 	Logger      *logrus.Logger
 	Server      *grpc.Server
-	KafkaWriter map[string]*kafka.Writer
+	KafkaWriter map[string]*kafka.Producer
 }
 
 func InitApp() (*App, error) {
