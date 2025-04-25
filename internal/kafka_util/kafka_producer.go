@@ -1,79 +1,40 @@
 package kafka_util
 
 import (
-	"fmt"
+	"errors"
 	"log"
 	"logs-grpc-server/internal/grpc/config"
-	"time"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/IBM/sarama"
 )
 
-func ensureTopic(brokers []string, topic string, partitions, replicationFactor int) error {
-	admin, err := kafka.NewAdminClient(&kafka.ConfigMap{"bootstrap.servers": brokers[0]})
+func InitKafkaWriters(cfg *config.TKafkaConfig) (*sarama.AsyncProducer, error) {
+	config := sarama.NewConfig()
+	config.Producer.Return.Successes = true
+	config.Producer.Return.Errors = true
+	config.Producer.Retry.Max = cfg.RetryAttempts
+	config.Producer.RequiredAcks = sarama.WaitForAll
+	config.ChannelBufferSize = cfg.BufferChannelSize
+	if len(cfg.Topics) == 0 {
+		return nil, errors.New("no topics configured")
+	}
+
+	producer, err := sarama.NewAsyncProducer(cfg.Brokers, config)
 	if err != nil {
-		return fmt.Errorf("failed to create admin client: %w", err)
-	}
-	defer admin.Close()
-
-	topicSpec := []kafka.TopicSpecification{{
-		Topic:             topic,
-		NumPartitions:     partitions,
-		ReplicationFactor: replicationFactor,
-	}}
-
-	for i := 0; i < 5; i++ {
-		results, err := admin.CreateTopics(nil, topicSpec, kafka.SetAdminOperationTimeout(5*time.Second))
-		if err == nil && len(results) > 0 && results[0].Error.Code() == kafka.ErrNoError {
-			return nil
-		}
-		if err != nil {
-			log.Printf("Retrying topic creation for %s due to error: %v", topic, err)
-		} else {
-			log.Printf("Retrying topic creation for %s due to Kafka error: %v", topic, results[0].Error.String())
-		}
-		time.Sleep(2 * time.Second)
+		log.Fatalf("Failed to start Sarama producer: %v", err)
+		return nil, err
 	}
 
-	return fmt.Errorf("failed to create topic %s after retries", topic)
-}
+	go func() {
+        for {
+            select {
+            case msg := <-producer.Successes():
+                log.Printf("✅ Sent to partition %d at offset %d\n", msg.Partition, msg.Offset)
+            case err := <-producer.Errors():
+                log.Printf("❌ Kafka error: %v\n", err)
+            }
+        }
+    }()
 
-func InitKafkaWriters(cfg *config.TKafkaConfig) (map[string]*kafka.Producer, error) {
-	producers := make(map[string]*kafka.Producer)
-
-	for name, topic := range cfg.Topics {
-		if err := ensureTopic(cfg.Brokers, topic, 3, 1); err != nil {
-			log.Printf("Warning: failed to ensure topic %s: %v", topic, err)
-		}
-
-		p, err := kafka.NewProducer(&kafka.ConfigMap{
-			"bootstrap.servers":      cfg.Brokers[0], // confluent client doesn't take []string, use comma-separated string if needed
-			"acks":                   cfg.Acks,
-			"queue.buffering.max.ms": cfg.WriteTimeout * 1000, // optional tuning
-		})
-		if err != nil {
-			return nil, fmt.Errorf("failed to create producer for topic %s: %w", topic, err)
-		}
-
-		// Optional: Delivery report handler (can help with debugging)
-		go func() {
-			for e := range p.Events() {
-				switch ev := e.(type) {
-				case *kafka.Message:
-					if ev.TopicPartition.Error != nil {
-						log.Printf("Delivery failed: %v\n", ev.TopicPartition)
-					}
-				}
-			}
-		}()
-
-		producers[name] = p
-	}
-	return producers, nil
-}
-
-func NewKafkaMessage(value []byte) *kafka.Message {
-	return &kafka.Message{
-		Value: value,
-	}
+	return &producer, nil
 }

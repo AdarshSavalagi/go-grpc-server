@@ -61,22 +61,13 @@ func InitConfig() (*Config, error) {
 	// Initialize Kafka config
 	KafkaConfig := TKafkaConfig{
 		Brokers:       viper.GetStringSlice("kafka.brokers"),
-		ClientID:      viper.GetString("kafka.client_id"),
-		Acks:          viper.GetString("kafka.acks"),
-		Async:         viper.GetBool("kafka.async"),
 		RetryAttempts: viper.GetInt("kafka.retry_attempts"),
-		WriteTimeout:  viper.GetInt("kafka.write_timeout"),
-		ReadTimeout:   viper.GetInt("kafka.read_timeout"),
 		Topics: map[string]string{
 			"logs":    viper.GetString("kafka.topics.logs"),
 			"events":  viper.GetString("kafka.topics.events"),
 			"context": viper.GetString("kafka.topics.context"),
 		},
-		EnableTLS:     viper.GetBool("kafka.enable_tls"),
-		EnableSASL:    viper.GetBool("kafka.enable_sasl"),
-		SASLUser:      viper.GetString("kafka.sasl_user"),
-		SASLPassword:  viper.GetString("kafka.sasl_password"),
-		SASLMechanism: viper.GetString("kafka.sasl_mechanism"),
+		BufferChannelSize: viper.GetInt("kafka.buffer_channel_size"),
 	}
 
 	return &Config{

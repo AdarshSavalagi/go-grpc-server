@@ -6,8 +6,7 @@ import (
 	"logs-grpc-server/internal/kafka_util"
 	"net"
 	"strconv"
-
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+ 	"github.com/IBM/sarama"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
@@ -16,7 +15,7 @@ type App struct {
 	Config      *config.Config
 	Logger      *logrus.Logger
 	Server      *grpc.Server
-	KafkaWriter map[string]*kafka.Producer
+	KafkaWriter *sarama.AsyncProducer
 }
 
 func InitApp() (*App, error) {

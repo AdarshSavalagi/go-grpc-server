@@ -14,21 +14,10 @@ type TServerConfig struct {
 
 type TKafkaConfig struct {
 	Brokers       []string          `mapstructure:"brokers"`
-	ClientID      string            `mapstructure:"client_id"`
-	Acks          string            `mapstructure:"acks"`
-	Async         bool              `mapstructure:"async"`
 	RetryAttempts int               `mapstructure:"retry_attempts"`
-	WriteTimeout  int               `mapstructure:"write_timeout"`
-	ReadTimeout   int               `mapstructure:"read_timeout"`
 
 	Topics map[string]string `mapstructure:"topics"` // "logs", "events", "context"
-
-	// Auth (optional)
-	EnableTLS     bool   `mapstructure:"enable_tls"`
-	EnableSASL    bool   `mapstructure:"enable_sasl"`
-	SASLUser      string `mapstructure:"sasl_user"`
-	SASLPassword  string `mapstructure:"sasl_password"`
-	SASLMechanism string `mapstructure:"sasl_mechanism"`
+	BufferChannelSize int `mapstructure:"buffer_channel_size"`
 }
 
 // Global variables holding configuration instances.

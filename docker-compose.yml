@@ -4,7 +4,7 @@ services:
   ## ✅   (Kafka with KRaft)
   ## -------------------------------
   kafka:
-    image: bitnami/kafka:latest 
+    image: bitnami/kafka:4.0.0 
     ports:
       - "9092:9092"
       - "9093:9093"
@@ -20,6 +20,8 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_KRAFT_CLUSTER_ID=MyKraftClusterId1234
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=10485760         # 10MB
+      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=10485760   # match
     volumes:
       - kafka_data:/bitnami/kafka
     networks:

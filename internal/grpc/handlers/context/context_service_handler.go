@@ -4,12 +4,12 @@ import (
 	"context"
 	log "logs-grpc-server/internal/grpc/proto"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/IBM/sarama"
 	"github.com/sirupsen/logrus"
 )
 
 type ContextServiceHandler struct {
-	KafkaWriters map[string]*kafka.Producer
+	KafkaWriters *sarama.AsyncProducer
 	Logger       *logrus.Logger
 	log.UnimplementedContextServiceServer
 }
