@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v5.29.3
-// source: log.proto
+// source: internal/grpc/proto/log.proto
 
 package log
 
@@ -58,11 +58,11 @@ func (x LogLevel) String() string {
 }
 
 func (LogLevel) Descriptor() protoreflect.EnumDescriptor {
-	return file_log_proto_enumTypes[0].Descriptor()
+	return file_internal_grpc_proto_log_proto_enumTypes[0].Descriptor()
 }
 
 func (LogLevel) Type() protoreflect.EnumType {
-	return &file_log_proto_enumTypes[0]
+	return &file_internal_grpc_proto_log_proto_enumTypes[0]
 }
 
 func (x LogLevel) Number() protoreflect.EnumNumber {
@@ -71,7 +71,7 @@ func (x LogLevel) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use LogLevel.Descriptor instead.
 func (LogLevel) EnumDescriptor() ([]byte, []int) {
-	return file_log_proto_rawDescGZIP(), []int{0}
+	return file_internal_grpc_proto_log_proto_rawDescGZIP(), []int{0}
 }
 
 type LogType int32
@@ -107,11 +107,11 @@ func (x LogType) String() string {
 }
 
 func (LogType) Descriptor() protoreflect.EnumDescriptor {
-	return file_log_proto_enumTypes[1].Descriptor()
+	return file_internal_grpc_proto_log_proto_enumTypes[1].Descriptor()
 }
 
 func (LogType) Type() protoreflect.EnumType {
-	return &file_log_proto_enumTypes[1]
+	return &file_internal_grpc_proto_log_proto_enumTypes[1]
 }
 
 func (x LogType) Number() protoreflect.EnumNumber {
@@ -120,7 +120,7 @@ func (x LogType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use LogType.Descriptor instead.
 func (LogType) EnumDescriptor() ([]byte, []int) {
-	return file_log_proto_rawDescGZIP(), []int{1}
+	return file_internal_grpc_proto_log_proto_rawDescGZIP(), []int{1}
 }
 
 type LogMessage struct {
@@ -143,7 +143,7 @@ type LogMessage struct {
 
 func (x *LogMessage) Reset() {
 	*x = LogMessage{}
-	mi := &file_log_proto_msgTypes[0]
+	mi := &file_internal_grpc_proto_log_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -155,7 +155,7 @@ func (x *LogMessage) String() string {
 func (*LogMessage) ProtoMessage() {}
 
 func (x *LogMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_log_proto_msgTypes[0]
+	mi := &file_internal_grpc_proto_log_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -168,7 +168,7 @@ func (x *LogMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogMessage.ProtoReflect.Descriptor instead.
 func (*LogMessage) Descriptor() ([]byte, []int) {
-	return file_log_proto_rawDescGZIP(), []int{0}
+	return file_internal_grpc_proto_log_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *LogMessage) GetLogID() string {
@@ -255,11 +255,55 @@ func (x *LogMessage) GetDeviceOSVersion() string {
 	return ""
 }
 
-var File_log_proto protoreflect.FileDescriptor
+type LogList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Logs          []*LogMessage          `protobuf:"bytes,1,rep,name=logs,proto3" json:"logs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_log_proto_rawDesc = "" +
+func (x *LogList) Reset() {
+	*x = LogList{}
+	mi := &file_internal_grpc_proto_log_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LogList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LogList) ProtoMessage() {}
+
+func (x *LogList) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_grpc_proto_log_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LogList.ProtoReflect.Descriptor instead.
+func (*LogList) Descriptor() ([]byte, []int) {
+	return file_internal_grpc_proto_log_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *LogList) GetLogs() []*LogMessage {
+	if x != nil {
+		return x.Logs
+	}
+	return nil
+}
+
+var File_internal_grpc_proto_log_proto protoreflect.FileDescriptor
+
+const file_internal_grpc_proto_log_proto_rawDesc = "" +
 	"\n" +
-	"\tlog.proto\x12\x03log\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\rcontext.proto\"\xa5\x03\n" +
+	"\x1dinternal/grpc/proto/log.proto\x12\x03log\x1a\x1fgoogle/protobuf/timestamp.proto\x1a!internal/grpc/proto/context.proto\"\xa5\x03\n" +
 	"\n" +
 	"LogMessage\x12\x14\n" +
 	"\x05logID\x18\x01 \x01(\tR\x05logID\x12#\n" +
@@ -276,7 +320,9 @@ const file_log_proto_rawDesc = "" +
 	" \x01(\x01R\rfreeStorageMB\x12 \n" +
 	"\vdeviceModel\x18\v \x01(\tR\vdeviceModel\x12\x1a\n" +
 	"\bdeviceOS\x18\f \x01(\tR\bdeviceOS\x12(\n" +
-	"\x0fdeviceOSVersion\x18\r \x01(\tR\x0fdeviceOSVersion*4\n" +
+	"\x0fdeviceOSVersion\x18\r \x01(\tR\x0fdeviceOSVersion\".\n" +
+	"\aLogList\x12#\n" +
+	"\x04logs\x18\x01 \x03(\v2\x0f.log.LogMessageR\x04logs*4\n" +
 	"\bLogLevel\x12\t\n" +
 	"\x05DEBUG\x10\x00\x12\b\n" +
 	"\x04INFO\x10\x01\x12\b\n" +
@@ -285,67 +331,72 @@ const file_log_proto_rawDesc = "" +
 	"\aLogType\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\r\n" +
 	"\tNON_FATAL\x10\x01\x12\x0f\n" +
-	"\vFATAL_CRASH\x10\x0227\n" +
+	"\vFATAL_CRASH\x10\x022c\n" +
 	"\n" +
 	"LogService\x12)\n" +
-	"\aSendLog\x12\x0f.log.LogMessage\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
+	"\aSendLog\x12\x0f.log.LogMessage\x1a\r.log.Response\x12*\n" +
+	"\vSendLogList\x12\f.log.LogList\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
 
 var (
-	file_log_proto_rawDescOnce sync.Once
-	file_log_proto_rawDescData []byte
+	file_internal_grpc_proto_log_proto_rawDescOnce sync.Once
+	file_internal_grpc_proto_log_proto_rawDescData []byte
 )
 
-func file_log_proto_rawDescGZIP() []byte {
-	file_log_proto_rawDescOnce.Do(func() {
-		file_log_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_log_proto_rawDesc), len(file_log_proto_rawDesc)))
+func file_internal_grpc_proto_log_proto_rawDescGZIP() []byte {
+	file_internal_grpc_proto_log_proto_rawDescOnce.Do(func() {
+		file_internal_grpc_proto_log_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_grpc_proto_log_proto_rawDesc), len(file_internal_grpc_proto_log_proto_rawDesc)))
 	})
-	return file_log_proto_rawDescData
+	return file_internal_grpc_proto_log_proto_rawDescData
 }
 
-var file_log_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_log_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_log_proto_goTypes = []any{
+var file_internal_grpc_proto_log_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_internal_grpc_proto_log_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_internal_grpc_proto_log_proto_goTypes = []any{
 	(LogLevel)(0),                 // 0: log.LogLevel
 	(LogType)(0),                  // 1: log.LogType
 	(*LogMessage)(nil),            // 2: log.LogMessage
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
-	(*Response)(nil),              // 4: log.Response
+	(*LogList)(nil),               // 3: log.LogList
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*Response)(nil),              // 5: log.Response
 }
-var file_log_proto_depIdxs = []int32{
+var file_internal_grpc_proto_log_proto_depIdxs = []int32{
 	0, // 0: log.LogMessage.level:type_name -> log.LogLevel
 	1, // 1: log.LogMessage.type:type_name -> log.LogType
-	3, // 2: log.LogMessage.loggedAt:type_name -> google.protobuf.Timestamp
-	2, // 3: log.LogService.SendLog:input_type -> log.LogMessage
-	4, // 4: log.LogService.SendLog:output_type -> log.Response
-	4, // [4:5] is the sub-list for method output_type
-	3, // [3:4] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 2: log.LogMessage.loggedAt:type_name -> google.protobuf.Timestamp
+	2, // 3: log.LogList.logs:type_name -> log.LogMessage
+	2, // 4: log.LogService.SendLog:input_type -> log.LogMessage
+	3, // 5: log.LogService.SendLogList:input_type -> log.LogList
+	5, // 6: log.LogService.SendLog:output_type -> log.Response
+	5, // 7: log.LogService.SendLogList:output_type -> log.Response
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
-func init() { file_log_proto_init() }
-func file_log_proto_init() {
-	if File_log_proto != nil {
+func init() { file_internal_grpc_proto_log_proto_init() }
+func file_internal_grpc_proto_log_proto_init() {
+	if File_internal_grpc_proto_log_proto != nil {
 		return
 	}
-	file_context_proto_init()
+	file_internal_grpc_proto_context_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_log_proto_rawDesc), len(file_log_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_grpc_proto_log_proto_rawDesc), len(file_internal_grpc_proto_log_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_log_proto_goTypes,
-		DependencyIndexes: file_log_proto_depIdxs,
-		EnumInfos:         file_log_proto_enumTypes,
-		MessageInfos:      file_log_proto_msgTypes,
+		GoTypes:           file_internal_grpc_proto_log_proto_goTypes,
+		DependencyIndexes: file_internal_grpc_proto_log_proto_depIdxs,
+		EnumInfos:         file_internal_grpc_proto_log_proto_enumTypes,
+		MessageInfos:      file_internal_grpc_proto_log_proto_msgTypes,
 	}.Build()
-	File_log_proto = out.File
-	file_log_proto_goTypes = nil
-	file_log_proto_depIdxs = nil
+	File_internal_grpc_proto_log_proto = out.File
+	file_internal_grpc_proto_log_proto_goTypes = nil
+	file_internal_grpc_proto_log_proto_depIdxs = nil
 }

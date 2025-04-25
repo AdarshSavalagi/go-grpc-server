@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v5.29.3
-// source: context.proto
+// source: internal/grpc/proto/context.proto
 
 package log
 
@@ -39,7 +39,7 @@ type Context struct {
 
 func (x *Context) Reset() {
 	*x = Context{}
-	mi := &file_context_proto_msgTypes[0]
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -51,7 +51,7 @@ func (x *Context) String() string {
 func (*Context) ProtoMessage() {}
 
 func (x *Context) ProtoReflect() protoreflect.Message {
-	mi := &file_context_proto_msgTypes[0]
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -64,7 +64,7 @@ func (x *Context) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Context.ProtoReflect.Descriptor instead.
 func (*Context) Descriptor() ([]byte, []int) {
-	return file_context_proto_rawDescGZIP(), []int{0}
+	return file_internal_grpc_proto_context_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Context) GetDeviceID() string {
@@ -147,7 +147,7 @@ type Response struct {
 
 func (x *Response) Reset() {
 	*x = Response{}
-	mi := &file_context_proto_msgTypes[1]
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -159,7 +159,7 @@ func (x *Response) String() string {
 func (*Response) ProtoMessage() {}
 
 func (x *Response) ProtoReflect() protoreflect.Message {
-	mi := &file_context_proto_msgTypes[1]
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -172,7 +172,7 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Response.ProtoReflect.Descriptor instead.
 func (*Response) Descriptor() ([]byte, []int) {
-	return file_context_proto_rawDescGZIP(), []int{1}
+	return file_internal_grpc_proto_context_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Response) GetMessage() string {
@@ -189,11 +189,55 @@ func (x *Response) GetSuccess() bool {
 	return false
 }
 
-var File_context_proto protoreflect.FileDescriptor
+type ContextList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Contexts      []*Context             `protobuf:"bytes,1,rep,name=contexts,proto3" json:"contexts,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_context_proto_rawDesc = "" +
+func (x *ContextList) Reset() {
+	*x = ContextList{}
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ContextList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ContextList) ProtoMessage() {}
+
+func (x *ContextList) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ContextList.ProtoReflect.Descriptor instead.
+func (*ContextList) Descriptor() ([]byte, []int) {
+	return file_internal_grpc_proto_context_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ContextList) GetContexts() []*Context {
+	if x != nil {
+		return x.Contexts
+	}
+	return nil
+}
+
+var File_internal_grpc_proto_context_proto protoreflect.FileDescriptor
+
+const file_internal_grpc_proto_context_proto_rawDesc = "" +
 	"\n" +
-	"\rcontext.proto\x12\x03log\"\xbb\x02\n" +
+	"!internal/grpc/proto/context.proto\x12\x03log\"\xbb\x02\n" +
 	"\aContext\x12\x1a\n" +
 	"\bdeviceID\x18\x01 \x01(\tR\bdeviceID\x12\x1e\n" +
 	"\n" +
@@ -210,57 +254,64 @@ const file_context_proto_rawDesc = "" +
 	" \x01(\bR\bisRooted\">\n" +
 	"\bResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\x12\x18\n" +
-	"\asuccess\x18\x02 \x01(\bR\asuccess2<\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess\"7\n" +
+	"\vContextList\x12(\n" +
+	"\bcontexts\x18\x01 \x03(\v2\f.log.ContextR\bcontexts2p\n" +
 	"\x0eContextService\x12*\n" +
-	"\vSendContext\x12\f.log.Context\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
+	"\vSendContext\x12\f.log.Context\x1a\r.log.Response\x122\n" +
+	"\x0fSendContextList\x12\x10.log.ContextList\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
 
 var (
-	file_context_proto_rawDescOnce sync.Once
-	file_context_proto_rawDescData []byte
+	file_internal_grpc_proto_context_proto_rawDescOnce sync.Once
+	file_internal_grpc_proto_context_proto_rawDescData []byte
 )
 
-func file_context_proto_rawDescGZIP() []byte {
-	file_context_proto_rawDescOnce.Do(func() {
-		file_context_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_context_proto_rawDesc), len(file_context_proto_rawDesc)))
+func file_internal_grpc_proto_context_proto_rawDescGZIP() []byte {
+	file_internal_grpc_proto_context_proto_rawDescOnce.Do(func() {
+		file_internal_grpc_proto_context_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_grpc_proto_context_proto_rawDesc), len(file_internal_grpc_proto_context_proto_rawDesc)))
 	})
-	return file_context_proto_rawDescData
+	return file_internal_grpc_proto_context_proto_rawDescData
 }
 
-var file_context_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_context_proto_goTypes = []any{
-	(*Context)(nil),  // 0: log.Context
-	(*Response)(nil), // 1: log.Response
+var file_internal_grpc_proto_context_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_internal_grpc_proto_context_proto_goTypes = []any{
+	(*Context)(nil),     // 0: log.Context
+	(*Response)(nil),    // 1: log.Response
+	(*ContextList)(nil), // 2: log.ContextList
 }
-var file_context_proto_depIdxs = []int32{
-	0, // 0: log.ContextService.SendContext:input_type -> log.Context
-	1, // 1: log.ContextService.SendContext:output_type -> log.Response
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+var file_internal_grpc_proto_context_proto_depIdxs = []int32{
+	0, // 0: log.ContextList.contexts:type_name -> log.Context
+	0, // 1: log.ContextService.SendContext:input_type -> log.Context
+	2, // 2: log.ContextService.SendContextList:input_type -> log.ContextList
+	1, // 3: log.ContextService.SendContext:output_type -> log.Response
+	1, // 4: log.ContextService.SendContextList:output_type -> log.Response
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_context_proto_init() }
-func file_context_proto_init() {
-	if File_context_proto != nil {
+func init() { file_internal_grpc_proto_context_proto_init() }
+func file_internal_grpc_proto_context_proto_init() {
+	if File_internal_grpc_proto_context_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_context_proto_rawDesc), len(file_context_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_grpc_proto_context_proto_rawDesc), len(file_internal_grpc_proto_context_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_context_proto_goTypes,
-		DependencyIndexes: file_context_proto_depIdxs,
-		MessageInfos:      file_context_proto_msgTypes,
+		GoTypes:           file_internal_grpc_proto_context_proto_goTypes,
+		DependencyIndexes: file_internal_grpc_proto_context_proto_depIdxs,
+		MessageInfos:      file_internal_grpc_proto_context_proto_msgTypes,
 	}.Build()
-	File_context_proto = out.File
-	file_context_proto_goTypes = nil
-	file_context_proto_depIdxs = nil
+	File_internal_grpc_proto_context_proto = out.File
+	file_internal_grpc_proto_context_proto_goTypes = nil
+	file_internal_grpc_proto_context_proto_depIdxs = nil
 }

@@ -36,3 +36,27 @@ func (h *EventServiceHandler) SendEvent(ctx context.Context, req *log.EventMessa
 		return &log.Response{Success: false, Message: "Kafka buffer full"}, nil
 	}
 }
+
+func (h *EventServiceHandler) SendEventList(ctx context.Context, req *log.EventList) (*log.Response, error) {
+    producer := (*h.KafkaWriters)
+
+    // Marshal the entire list of events to JSON (or your preferred format)
+    data, err := protojson.Marshal(req)
+    if err != nil {
+        h.Logger.Errorf("Failed to marshal event list to JSON: %v", err)
+        return &log.Response{Success: false, Message: "Failed to encode event list"}, err
+    }
+
+    // Send the whole list of events as a single message
+    select {
+    case producer.Input() <- &sarama.ProducerMessage{
+        Topic: "events",
+        Value: sarama.ByteEncoder(data),
+    }:
+        h.Logger.Debugf("Event list queued for Kafka topic: %s, data: %s", "events", string(data))
+        return &log.Response{Success: true, Message: "Event list sent successfully"}, nil
+    default:
+        h.Logger.Warn("Kafka input buffer full, dropping event list")
+        return &log.Response{Success: false, Message: "Kafka buffer full"}, nil
+    }
+}

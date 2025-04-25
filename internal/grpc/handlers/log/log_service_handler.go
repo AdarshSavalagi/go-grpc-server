@@ -14,6 +14,10 @@ type LogServiceHandler struct {
 	log.UnimplementedLogServiceServer
 }
 
+
+func (h *LogServiceHandler)SendLogList(ctx context.Context, req *log.LogList)(*log.Response,error){
+	return &log.Response{Success: true, Message: "Log list sent successfully"}, nil
+}
 func (h *LogServiceHandler) SendLog(ctx context.Context, req *log.LogMessage) (*log.Response, error) {
 	// producer, ok := h.KafkaWriters["log"]
 	// if !ok {

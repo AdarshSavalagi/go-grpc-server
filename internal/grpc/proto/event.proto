@@ -3,17 +3,18 @@ syntax = "proto3";
 package log;
 option go_package = "go-grpc-server/internal/grpc/proto;log";
 import "google/protobuf/timestamp.proto";
-
+import "internal/grpc/proto/context.proto";
 
 
 service EventService {
   rpc SendEvent (EventMessage) returns (Response);
+  rpc SendEventList (EventList) returns (Response);
 }
 
-message Response {
-  string status = 1;
-  string message = 2;
+message EventList {
+  repeated EventMessage events = 1;
 }
+
 
 message EventMessage {
   string eventID = 1;

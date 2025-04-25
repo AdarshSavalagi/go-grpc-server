@@ -14,6 +14,10 @@ type ContextServiceHandler struct {
 	log.UnimplementedContextServiceServer
 }
 
+func (h*ContextServiceHandler)SendContextList(ctx context.Context, req *log.ContextList)(*log.Response,error){
+	return &log.Response{Success: true, Message: "Context list sent successfully"}, nil
+}
+
 func (h *ContextServiceHandler) SendContext(ctx context.Context, req *log.Context) (*log.Response, error) {
 	// producer, ok := h.KafkaWriters["context"]
 	// if !ok {

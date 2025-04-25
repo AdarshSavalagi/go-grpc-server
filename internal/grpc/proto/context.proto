@@ -2,8 +2,11 @@ syntax = "proto3";
 
 package log;
 option go_package = "go-grpc-server/internal/grpc/proto;log";
+
+
 service ContextService {
   rpc SendContext (Context) returns (Response);
+  rpc SendContextList (ContextList) returns (Response);
 }
 
 message Context {
@@ -22,4 +25,8 @@ message Context {
 message Response {
   string message = 1;
   bool success = 2;
+}
+
+message ContextList {
+  repeated Context contexts = 1;
 }

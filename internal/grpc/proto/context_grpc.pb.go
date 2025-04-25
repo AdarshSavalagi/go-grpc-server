@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: context.proto
+// source: internal/grpc/proto/context.proto
 
 package log
 
@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ContextService_SendContext_FullMethodName = "/log.ContextService/SendContext"
+	ContextService_SendContext_FullMethodName     = "/log.ContextService/SendContext"
+	ContextService_SendContextList_FullMethodName = "/log.ContextService/SendContextList"
 )
 
 // ContextServiceClient is the client API for ContextService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ContextServiceClient interface {
 	SendContext(ctx context.Context, in *Context, opts ...grpc.CallOption) (*Response, error)
+	SendContextList(ctx context.Context, in *ContextList, opts ...grpc.CallOption) (*Response, error)
 }
 
 type contextServiceClient struct {
@@ -47,11 +49,22 @@ func (c *contextServiceClient) SendContext(ctx context.Context, in *Context, opt
 	return out, nil
 }
 
+func (c *contextServiceClient) SendContextList(ctx context.Context, in *ContextList, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ContextService_SendContextList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ContextServiceServer is the server API for ContextService service.
 // All implementations must embed UnimplementedContextServiceServer
 // for forward compatibility.
 type ContextServiceServer interface {
 	SendContext(context.Context, *Context) (*Response, error)
+	SendContextList(context.Context, *ContextList) (*Response, error)
 	mustEmbedUnimplementedContextServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedContextServiceServer struct{}
 
 func (UnimplementedContextServiceServer) SendContext(context.Context, *Context) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendContext not implemented")
+}
+func (UnimplementedContextServiceServer) SendContextList(context.Context, *ContextList) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendContextList not implemented")
 }
 func (UnimplementedContextServiceServer) mustEmbedUnimplementedContextServiceServer() {}
 func (UnimplementedContextServiceServer) testEmbeddedByValue()                        {}
@@ -104,6 +120,24 @@ func _ContextService_SendContext_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ContextService_SendContextList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContextList)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContextServiceServer).SendContextList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContextService_SendContextList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContextServiceServer).SendContextList(ctx, req.(*ContextList))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ContextService_ServiceDesc is the grpc.ServiceDesc for ContextService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -115,7 +149,11 @@ var ContextService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "SendContext",
 			Handler:    _ContextService_SendContext_Handler,
 		},
+		{
+			MethodName: "SendContextList",
+			Handler:    _ContextService_SendContextList_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "context.proto",
+	Metadata: "internal/grpc/proto/context.proto",
 }

@@ -15,6 +15,7 @@ func InitKafkaWriters(cfg *config.TKafkaConfig) (*sarama.AsyncProducer, error) {
 	config.Producer.Retry.Max = cfg.RetryAttempts
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.ChannelBufferSize = cfg.BufferChannelSize
+	config.Producer.MaxMessageBytes = cfg.BufferChannelSize
 	if len(cfg.Topics) == 0 {
 		return nil, errors.New("no topics configured")
 	}

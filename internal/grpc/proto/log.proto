@@ -3,7 +3,7 @@ syntax = "proto3";
 package log;
 option go_package = "go-grpc-server/internal/grpc/proto;log";
 import "google/protobuf/timestamp.proto";
-
+import "internal/grpc/proto/context.proto";
 
 
 enum LogLevel {
@@ -11,11 +11,6 @@ enum LogLevel {
   INFO = 1;
   WARN = 2;
   ERROR =3;
-}
-
-message Response {
-  string status = 1;
-  string message = 2;
 }
 
 enum LogType {
@@ -42,7 +37,11 @@ message LogMessage {
   string deviceOSVersion = 13;
 }
 
+message LogList {
+  repeated LogMessage logs = 1;
+}
 
 service LogService {
   rpc SendLog (LogMessage) returns (Response);
+  rpc SendLogList (LogList) returns (Response);
 }
