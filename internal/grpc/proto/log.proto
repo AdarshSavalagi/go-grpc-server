@@ -18,7 +18,6 @@ enum LogType {
   NON_FATAL = 1;
   FATAL_CRASH = 2;
 }
-
 message LogMessage {
   string logID = 1;
 
@@ -31,17 +30,24 @@ message LogMessage {
   google.protobuf.Timestamp loggedAt = 8;
 
   double freeRAMMB = 9;
-  double freeStorageMB = 10;
   string deviceModel = 11;
   string deviceOS = 12;
   string deviceOSVersion = 13;
+  map<string, string> customAttributes = 14;
 }
 
 message LogList {
   repeated LogMessage logs = 1;
 }
 
+message LogFileRequest {
+  string sessionID = 1;
+  string fileName = 2;
+  bytes fileContent = 3;
+}
+
 service LogService {
   rpc SendLog (LogMessage) returns (Response);
   rpc SendLogList (LogList) returns (Response);
+  rpc SendLogFile (LogFileRequest) returns (Response);
 }

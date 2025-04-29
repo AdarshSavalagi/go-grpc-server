@@ -17,3 +17,6 @@ kafka:
     logs: "logs"
     events: "events"
     context: "context"
+    context-files: "context-files"
+    events-files: "events-files"
+    logs-files: "logs-files"

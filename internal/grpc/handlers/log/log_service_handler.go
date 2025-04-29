@@ -6,6 +6,7 @@ import (
 
 	"github.com/IBM/sarama"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 type LogServiceHandler struct {
@@ -14,49 +15,76 @@ type LogServiceHandler struct {
 	log.UnimplementedLogServiceServer
 }
 
+// SendLogList handles a batch of log messages and sends to Kafka
+func (h *LogServiceHandler) SendLogList(ctx context.Context, req *log.LogList) (*log.Response, error) {
+	producer := (*h.KafkaWriters)
 
-func (h *LogServiceHandler)SendLogList(ctx context.Context, req *log.LogList)(*log.Response,error){
-	return &log.Response{Success: true, Message: "Log list sent successfully"}, nil
+	data, err := protojson.Marshal(req)
+	if err != nil {
+		h.Logger.Errorf("Failed to marshal log list to JSON: %v", err)
+		return &log.Response{Success: false, Message: "Encoding error"}, err
+	}
+
+	select {
+	case producer.Input() <- &sarama.ProducerMessage{
+		Topic: "logs-list",
+		Value: sarama.ByteEncoder(data),
+	}:
+		h.Logger.Infof("Log list sent to Kafka")
+		return &log.Response{Success: true, Message: "Log list sent successfully"}, nil
+	default:
+		h.Logger.Warn("Kafka buffer full — dropping log list")
+		return &log.Response{Success: false, Message: "Kafka buffer full"}, nil
+	}
 }
+
+// SendLog handles individual log message
 func (h *LogServiceHandler) SendLog(ctx context.Context, req *log.LogMessage) (*log.Response, error) {
-	// producer, ok := h.KafkaWriters["log"]
-	// if !ok {
-	// 	h.Logger.Error("Kafka producer for 'log' not found")
-	// 	return &log.Response{Success: false, Message: "Kafka producer not available"}, nil
-	// }
+	producer := (*h.KafkaWriters)
 
-	// topic := "logs" // Change this if you need a configurable topic
+	data, err := protojson.Marshal(req)
+	if err != nil {
+		h.Logger.Errorf("Failed to marshal log message to JSON: %v", err)
+		return &log.Response{Success: false, Message: "Encoding error"}, err
+	}
 
-	// deliveryChan := make(chan kafka.Event)
+	select {
+	case producer.Input() <- &sarama.ProducerMessage{
+		Topic: "logs-message",
+		Value: sarama.ByteEncoder(data),
+	}:
+		h.Logger.Infof("Single log message sent to Kafka")
+		return &log.Response{Success: true, Message: "Log sent successfully"}, nil
+	default:
+		h.Logger.Warn("Kafka buffer full — dropping log")
+		return &log.Response{Success: false, Message: "Kafka buffer full"}, nil
+	}
+}
 
-	// err := producer.Produce(&kafka.Message{
-	// 	TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-	// 	Key:            []byte(req.Key),
-	// 	Value:          []byte(req.Value),
-	// }, deliveryChan)
+// SendLogFile handles full log file uploads (binary content)
+func (h *LogServiceHandler) SendLogFile(ctx context.Context, req *log.LogFileRequest) (*log.Response, error) {
+	producer := (*h.KafkaWriters)
 
-	// if err != nil {
-	// 	h.Logger.Errorf("Failed to produce message: %v", err)
-	// 	return &log.Response{Success: false, Message: "Failed to produce message"}, err
-	// }
+	if req.FileContent == nil {
+		h.Logger.Error("Log file content is nil")
+		return &log.Response{Success: false, Message: "Empty file content"}, nil
+	}
 
-	// select {
-	// case e := <-deliveryChan:
-	// 	m := e.(*kafka.Message)
-	// 	if m.TopicPartition.Error != nil {
-	// 		h.Logger.Errorf("Delivery failed: %v", m.TopicPartition.Error)
-	// 		return &log.Response{Success: false, Message: "Delivery failed"}, m.TopicPartition.Error
-	// 	}
-	// 	h.Logger.Infof("Message delivered to topic %s [%d] at offset %v",
-	// 		*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
-	// case <-ctx.Done():
-	// 	h.Logger.Warn("Context cancelled before delivery")
-	// 	return &log.Response{Success: false, Message: "Context cancelled"}, ctx.Err()
-	// case <-time.After(10 * time.Second):
-	// 	h.Logger.Warn("Timeout waiting for delivery report")
-	// 	return &log.Response{Success: false, Message: "Timeout waiting for delivery report"}, nil
-	// }
+	message := &sarama.ProducerMessage{
+		Topic: "logs-file",
+		Value: sarama.ByteEncoder(req.FileContent),
+		Headers: []sarama.RecordHeader{
+			{Key: []byte("sessionId"), Value: []byte(req.SessionID)},
+			{Key: []byte("fileName"), Value: []byte(req.FileName)},
+		},
+	}
 
-	// close(deliveryChan)
-	return &log.Response{Success: true, Message: "Log sent successfully"}, nil
+	select {
+	case producer.Input() <- message:
+		h.Logger.Infof("Log file '%s' sent to Kafka", req.FileName)
+		return &log.Response{Success: true, Message: "Log file sent successfully"}, nil
+	default:
+		h.Logger.Warn("Kafka buffer full — dropping log file")
+		return &log.Response{Success: false, Message: "Kafka buffer full"}, nil
+	}
 }

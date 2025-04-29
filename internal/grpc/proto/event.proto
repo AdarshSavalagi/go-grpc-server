@@ -9,6 +9,7 @@ import "internal/grpc/proto/context.proto";
 service EventService {
   rpc SendEvent (EventMessage) returns (Response);
   rpc SendEventList (EventList) returns (Response);
+  rpc SendEventFile(EventFileRequest) returns (Response);
 }
 
 message EventList {
@@ -39,4 +40,10 @@ message EventMessage {
   bool dynamicConfigChanged = 16;
 
   map<string, string> customAttributes = 17;
+}
+
+message EventFileRequest {
+  string sessionID = 1;
+  string fileName = 2;
+  bytes fileContent = 3;
 }

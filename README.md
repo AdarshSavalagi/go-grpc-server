@@ -1,6 +1,6 @@
  docker compose --profile arm up
 
- protoc --go_out=. --go-grpc_out=. log.proto
+ protoc --go_out=internal/grpc/proto/ --go-grpc_out=internal/grpc/proto/ internal/grpc/proto/*.proto
 
 docker exec -it kafka bash
 

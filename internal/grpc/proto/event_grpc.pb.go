@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	EventService_SendEvent_FullMethodName     = "/log.EventService/SendEvent"
 	EventService_SendEventList_FullMethodName = "/log.EventService/SendEventList"
+	EventService_SendEventFile_FullMethodName = "/log.EventService/SendEventFile"
 )
 
 // EventServiceClient is the client API for EventService service.
@@ -29,6 +30,7 @@ const (
 type EventServiceClient interface {
 	SendEvent(ctx context.Context, in *EventMessage, opts ...grpc.CallOption) (*Response, error)
 	SendEventList(ctx context.Context, in *EventList, opts ...grpc.CallOption) (*Response, error)
+	SendEventFile(ctx context.Context, in *EventFileRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type eventServiceClient struct {
@@ -59,12 +61,23 @@ func (c *eventServiceClient) SendEventList(ctx context.Context, in *EventList, o
 	return out, nil
 }
 
+func (c *eventServiceClient) SendEventFile(ctx context.Context, in *EventFileRequest, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, EventService_SendEventFile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EventServiceServer is the server API for EventService service.
 // All implementations must embed UnimplementedEventServiceServer
 // for forward compatibility.
 type EventServiceServer interface {
 	SendEvent(context.Context, *EventMessage) (*Response, error)
 	SendEventList(context.Context, *EventList) (*Response, error)
+	SendEventFile(context.Context, *EventFileRequest) (*Response, error)
 	mustEmbedUnimplementedEventServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedEventServiceServer) SendEvent(context.Context, *EventMessage)
 }
 func (UnimplementedEventServiceServer) SendEventList(context.Context, *EventList) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendEventList not implemented")
+}
+func (UnimplementedEventServiceServer) SendEventFile(context.Context, *EventFileRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendEventFile not implemented")
 }
 func (UnimplementedEventServiceServer) mustEmbedUnimplementedEventServiceServer() {}
 func (UnimplementedEventServiceServer) testEmbeddedByValue()                      {}
@@ -138,6 +154,24 @@ func _EventService_SendEventList_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EventService_SendEventFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EventFileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EventServiceServer).SendEventFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EventService_SendEventFile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EventServiceServer).SendEventFile(ctx, req.(*EventFileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EventService_ServiceDesc is the grpc.ServiceDesc for EventService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var EventService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendEventList",
 			Handler:    _EventService_SendEventList_Handler,
+		},
+		{
+			MethodName: "SendEventFile",
+			Handler:    _EventService_SendEventFile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

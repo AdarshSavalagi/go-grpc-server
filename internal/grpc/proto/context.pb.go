@@ -233,6 +233,66 @@ func (x *ContextList) GetContexts() []*Context {
 	return nil
 }
 
+type ContextFileRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionID     string                 `protobuf:"bytes,1,opt,name=sessionID,proto3" json:"sessionID,omitempty"`
+	FileName      string                 `protobuf:"bytes,2,opt,name=fileName,proto3" json:"fileName,omitempty"`
+	FileContent   []byte                 `protobuf:"bytes,3,opt,name=fileContent,proto3" json:"fileContent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ContextFileRequest) Reset() {
+	*x = ContextFileRequest{}
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ContextFileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ContextFileRequest) ProtoMessage() {}
+
+func (x *ContextFileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_grpc_proto_context_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ContextFileRequest.ProtoReflect.Descriptor instead.
+func (*ContextFileRequest) Descriptor() ([]byte, []int) {
+	return file_internal_grpc_proto_context_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ContextFileRequest) GetSessionID() string {
+	if x != nil {
+		return x.SessionID
+	}
+	return ""
+}
+
+func (x *ContextFileRequest) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *ContextFileRequest) GetFileContent() []byte {
+	if x != nil {
+		return x.FileContent
+	}
+	return nil
+}
+
 var File_internal_grpc_proto_context_proto protoreflect.FileDescriptor
 
 const file_internal_grpc_proto_context_proto_rawDesc = "" +
@@ -256,10 +316,15 @@ const file_internal_grpc_proto_context_proto_rawDesc = "" +
 	"\amessage\x18\x01 \x01(\tR\amessage\x12\x18\n" +
 	"\asuccess\x18\x02 \x01(\bR\asuccess\"7\n" +
 	"\vContextList\x12(\n" +
-	"\bcontexts\x18\x01 \x03(\v2\f.log.ContextR\bcontexts2p\n" +
+	"\bcontexts\x18\x01 \x03(\v2\f.log.ContextR\bcontexts\"p\n" +
+	"\x12ContextFileRequest\x12\x1c\n" +
+	"\tsessionID\x18\x01 \x01(\tR\tsessionID\x12\x1a\n" +
+	"\bfileName\x18\x02 \x01(\tR\bfileName\x12 \n" +
+	"\vfileContent\x18\x03 \x01(\fR\vfileContent2\xab\x01\n" +
 	"\x0eContextService\x12*\n" +
 	"\vSendContext\x12\f.log.Context\x1a\r.log.Response\x122\n" +
-	"\x0fSendContextList\x12\x10.log.ContextList\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
+	"\x0fSendContextList\x12\x10.log.ContextList\x1a\r.log.Response\x129\n" +
+	"\x0fSendContextFile\x12\x17.log.ContextFileRequest\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
 
 var (
 	file_internal_grpc_proto_context_proto_rawDescOnce sync.Once
@@ -273,20 +338,23 @@ func file_internal_grpc_proto_context_proto_rawDescGZIP() []byte {
 	return file_internal_grpc_proto_context_proto_rawDescData
 }
 
-var file_internal_grpc_proto_context_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_internal_grpc_proto_context_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_internal_grpc_proto_context_proto_goTypes = []any{
-	(*Context)(nil),     // 0: log.Context
-	(*Response)(nil),    // 1: log.Response
-	(*ContextList)(nil), // 2: log.ContextList
+	(*Context)(nil),            // 0: log.Context
+	(*Response)(nil),           // 1: log.Response
+	(*ContextList)(nil),        // 2: log.ContextList
+	(*ContextFileRequest)(nil), // 3: log.ContextFileRequest
 }
 var file_internal_grpc_proto_context_proto_depIdxs = []int32{
 	0, // 0: log.ContextList.contexts:type_name -> log.Context
 	0, // 1: log.ContextService.SendContext:input_type -> log.Context
 	2, // 2: log.ContextService.SendContextList:input_type -> log.ContextList
-	1, // 3: log.ContextService.SendContext:output_type -> log.Response
-	1, // 4: log.ContextService.SendContextList:output_type -> log.Response
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	3, // 3: log.ContextService.SendContextFile:input_type -> log.ContextFileRequest
+	1, // 4: log.ContextService.SendContext:output_type -> log.Response
+	1, // 5: log.ContextService.SendContextList:output_type -> log.Response
+	1, // 6: log.ContextService.SendContextFile:output_type -> log.Response
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -303,7 +371,7 @@ func file_internal_grpc_proto_context_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_grpc_proto_context_proto_rawDesc), len(file_internal_grpc_proto_context_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

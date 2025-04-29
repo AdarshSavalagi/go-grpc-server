@@ -230,6 +230,66 @@ func (x *EventMessage) GetCustomAttributes() map[string]string {
 	return nil
 }
 
+type EventFileRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionID     string                 `protobuf:"bytes,1,opt,name=sessionID,proto3" json:"sessionID,omitempty"`
+	FileName      string                 `protobuf:"bytes,2,opt,name=fileName,proto3" json:"fileName,omitempty"`
+	FileContent   []byte                 `protobuf:"bytes,3,opt,name=fileContent,proto3" json:"fileContent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventFileRequest) Reset() {
+	*x = EventFileRequest{}
+	mi := &file_internal_grpc_proto_event_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventFileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventFileRequest) ProtoMessage() {}
+
+func (x *EventFileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_grpc_proto_event_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventFileRequest.ProtoReflect.Descriptor instead.
+func (*EventFileRequest) Descriptor() ([]byte, []int) {
+	return file_internal_grpc_proto_event_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *EventFileRequest) GetSessionID() string {
+	if x != nil {
+		return x.SessionID
+	}
+	return ""
+}
+
+func (x *EventFileRequest) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *EventFileRequest) GetFileContent() []byte {
+	if x != nil {
+		return x.FileContent
+	}
+	return nil
+}
+
 var File_internal_grpc_proto_event_proto protoreflect.FileDescriptor
 
 const file_internal_grpc_proto_event_proto_rawDesc = "" +
@@ -259,10 +319,15 @@ const file_internal_grpc_proto_event_proto_rawDesc = "" +
 	"\x10customAttributes\x18\x11 \x03(\v2'.log.EventMessage.CustomAttributesEntryR\x10customAttributes\x1aC\n" +
 	"\x15CustomAttributesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012m\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"n\n" +
+	"\x10EventFileRequest\x12\x1c\n" +
+	"\tsessionID\x18\x01 \x01(\tR\tsessionID\x12\x1a\n" +
+	"\bfileName\x18\x02 \x01(\tR\bfileName\x12 \n" +
+	"\vfileContent\x18\x03 \x01(\fR\vfileContent2\xa4\x01\n" +
 	"\fEventService\x12-\n" +
 	"\tSendEvent\x12\x11.log.EventMessage\x1a\r.log.Response\x12.\n" +
-	"\rSendEventList\x12\x0e.log.EventList\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
+	"\rSendEventList\x12\x0e.log.EventList\x1a\r.log.Response\x125\n" +
+	"\rSendEventFile\x12\x15.log.EventFileRequest\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
 
 var (
 	file_internal_grpc_proto_event_proto_rawDescOnce sync.Once
@@ -276,24 +341,27 @@ func file_internal_grpc_proto_event_proto_rawDescGZIP() []byte {
 	return file_internal_grpc_proto_event_proto_rawDescData
 }
 
-var file_internal_grpc_proto_event_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_internal_grpc_proto_event_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_internal_grpc_proto_event_proto_goTypes = []any{
 	(*EventList)(nil),             // 0: log.EventList
 	(*EventMessage)(nil),          // 1: log.EventMessage
-	nil,                           // 2: log.EventMessage.CustomAttributesEntry
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
-	(*Response)(nil),              // 4: log.Response
+	(*EventFileRequest)(nil),      // 2: log.EventFileRequest
+	nil,                           // 3: log.EventMessage.CustomAttributesEntry
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*Response)(nil),              // 5: log.Response
 }
 var file_internal_grpc_proto_event_proto_depIdxs = []int32{
 	1, // 0: log.EventList.events:type_name -> log.EventMessage
-	3, // 1: log.EventMessage.eventTime:type_name -> google.protobuf.Timestamp
-	2, // 2: log.EventMessage.customAttributes:type_name -> log.EventMessage.CustomAttributesEntry
+	4, // 1: log.EventMessage.eventTime:type_name -> google.protobuf.Timestamp
+	3, // 2: log.EventMessage.customAttributes:type_name -> log.EventMessage.CustomAttributesEntry
 	1, // 3: log.EventService.SendEvent:input_type -> log.EventMessage
 	0, // 4: log.EventService.SendEventList:input_type -> log.EventList
-	4, // 5: log.EventService.SendEvent:output_type -> log.Response
-	4, // 6: log.EventService.SendEventList:output_type -> log.Response
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
+	2, // 5: log.EventService.SendEventFile:input_type -> log.EventFileRequest
+	5, // 6: log.EventService.SendEvent:output_type -> log.Response
+	5, // 7: log.EventService.SendEventList:output_type -> log.Response
+	5, // 8: log.EventService.SendEventFile:output_type -> log.Response
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name
@@ -311,7 +379,7 @@ func file_internal_grpc_proto_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_grpc_proto_event_proto_rawDesc), len(file_internal_grpc_proto_event_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

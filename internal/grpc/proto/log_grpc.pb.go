@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	LogService_SendLog_FullMethodName     = "/log.LogService/SendLog"
 	LogService_SendLogList_FullMethodName = "/log.LogService/SendLogList"
+	LogService_SendLogFile_FullMethodName = "/log.LogService/SendLogFile"
 )
 
 // LogServiceClient is the client API for LogService service.
@@ -29,6 +30,7 @@ const (
 type LogServiceClient interface {
 	SendLog(ctx context.Context, in *LogMessage, opts ...grpc.CallOption) (*Response, error)
 	SendLogList(ctx context.Context, in *LogList, opts ...grpc.CallOption) (*Response, error)
+	SendLogFile(ctx context.Context, in *LogFileRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type logServiceClient struct {
@@ -59,12 +61,23 @@ func (c *logServiceClient) SendLogList(ctx context.Context, in *LogList, opts ..
 	return out, nil
 }
 
+func (c *logServiceClient) SendLogFile(ctx context.Context, in *LogFileRequest, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, LogService_SendLogFile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LogServiceServer is the server API for LogService service.
 // All implementations must embed UnimplementedLogServiceServer
 // for forward compatibility.
 type LogServiceServer interface {
 	SendLog(context.Context, *LogMessage) (*Response, error)
 	SendLogList(context.Context, *LogList) (*Response, error)
+	SendLogFile(context.Context, *LogFileRequest) (*Response, error)
 	mustEmbedUnimplementedLogServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedLogServiceServer) SendLog(context.Context, *LogMessage) (*Res
 }
 func (UnimplementedLogServiceServer) SendLogList(context.Context, *LogList) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendLogList not implemented")
+}
+func (UnimplementedLogServiceServer) SendLogFile(context.Context, *LogFileRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendLogFile not implemented")
 }
 func (UnimplementedLogServiceServer) mustEmbedUnimplementedLogServiceServer() {}
 func (UnimplementedLogServiceServer) testEmbeddedByValue()                    {}
@@ -138,6 +154,24 @@ func _LogService_SendLogList_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LogService_SendLogFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogFileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServiceServer).SendLogFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LogService_SendLogFile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServiceServer).SendLogFile(ctx, req.(*LogFileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LogService_ServiceDesc is the grpc.ServiceDesc for LogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var LogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendLogList",
 			Handler:    _LogService_SendLogList_Handler,
+		},
+		{
+			MethodName: "SendLogFile",
+			Handler:    _LogService_SendLogFile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
