@@ -15,7 +15,7 @@ type EventServiceHandler struct {
 	log.UnimplementedEventServiceServer
 }
 
-func (h *EventServiceHandler) SendContextFile(ctx context.Context, req *log.ContextFileRequest) (*log.Response, error) {
+func (h *EventServiceHandler) SendEventFile(ctx context.Context, req *log.EventFileRequest) (*log.Response, error) {
 	// Implementation for sending context file
 	file := req.FileContent
 	if file == nil {
@@ -25,7 +25,7 @@ func (h *EventServiceHandler) SendContextFile(ctx context.Context, req *log.Cont
 	producer := (*h.KafkaWriters)
 
 	msg := &sarama.ProducerMessage{
-		Topic: "context-files",
+		Topic: "event-files",
 		Key:   sarama.StringEncoder(req.FileName),
 		Value: sarama.ByteEncoder(file),
 		Headers: []sarama.RecordHeader{
@@ -36,10 +36,10 @@ func (h *EventServiceHandler) SendContextFile(ctx context.Context, req *log.Cont
 
 	select {
 	case producer.Input() <- msg:
-		h.Logger.Infof("Context file queued: %s", req.FileName)
-		return &log.Response{Success: true, Message: "Context file sent successfully"}, nil
+		h.Logger.Infof("Event file queued: %s", req.FileName)
+		return &log.Response{Success: true, Message: "Event file sent successfully"}, nil
 	default:
-		h.Logger.Warn("Kafka buffer full, dropping context file")
+		h.Logger.Warn("Kafka buffer full, dropping event file")
 		return &log.Response{Success: false, Message: "Kafka buffer full"}, nil
 	}
 }
