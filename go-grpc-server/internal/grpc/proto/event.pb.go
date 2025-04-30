@@ -11,6 +11,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	proto "internal/grpc/proto"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -328,7 +329,7 @@ const file_internal_grpc_proto_event_proto_rawDesc = "" +
 	"\fEventService\x12-\n" +
 	"\tSendEvent\x12\x11.log.EventMessage\x1a\r.log.Response\x12.\n" +
 	"\rSendEventList\x12\x0e.log.EventList\x1a\r.log.Response\x125\n" +
-	"\rSendEventFile\x12\x15.log.EventFileRequest\x1a\r.log.ResponseB\x19Z\x17internal/grpc/proto;logb\x06proto3"
+	"\rSendEventFile\x12\x15.log.EventFileRequest\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
 
 var (
 	file_internal_grpc_proto_event_proto_rawDescOnce sync.Once
@@ -350,7 +351,7 @@ var file_internal_grpc_proto_event_proto_goTypes = []any{
 	nil,                           // 3: log.EventMessage.CustomAttributesEntry
 	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 	(*structpb.Value)(nil),        // 5: google.protobuf.Value
-	(*Response)(nil),              // 6: log.Response
+	(*proto.Response)(nil),        // 6: log.Response
 }
 var file_internal_grpc_proto_event_proto_depIdxs = []int32{
 	1, // 0: log.EventList.events:type_name -> log.EventMessage
@@ -375,7 +376,6 @@ func file_internal_grpc_proto_event_proto_init() {
 	if File_internal_grpc_proto_event_proto != nil {
 		return
 	}
-	file_internal_grpc_proto_context_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

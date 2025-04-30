@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package log;
-option go_package = "go-grpc-server/internal/grpc/proto;log";
+option go_package = "internal/grpc/proto;log";
 import "google/protobuf/timestamp.proto";
 import "internal/grpc/proto/context.proto";
 
@@ -18,6 +18,7 @@ enum LogType {
   NON_FATAL = 1;
   FATAL_CRASH = 2;
 }
+
 message LogMessage {
   string logID = 1;
 

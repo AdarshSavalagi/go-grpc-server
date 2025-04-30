@@ -1,9 +1,11 @@
 syntax = "proto3";
 
 package log;
-option go_package = "go-grpc-server/internal/grpc/proto;log";
+option go_package = "internal/grpc/proto;log";
 import "google/protobuf/timestamp.proto";
 import "internal/grpc/proto/context.proto";
+import "google/protobuf/struct.proto";
+
 
 
 service EventService {
@@ -20,26 +22,26 @@ message EventList {
 message EventMessage {
   string eventID = 1;
 
-  string eventName = 3;
-  string screenName = 4;
+  string eventName = 2;
+  string screenName = 3;
 
-  google.protobuf.Timestamp eventTime = 5;
+  google.protobuf.Timestamp eventTime = 4;
 
-  bool appOpened = 6;
-  bool appBackgrounded = 7;
-  bool sessionStarted = 8;
-  bool sessionEnded = 9;
+  bool appOpened =5;
+  bool appBackgrounded = 6;
+  bool sessionStarted = 7;
+  bool sessionEnded = 8;
 
-  double latitude = 10;
-  double longitude = 11;
-  string city = 12;
-  string region = 13;
-  string country = 14;
-  string carrier = 15;
+  double latitude = 9;
+  double longitude = 10;
+  string city = 11;
+  string region = 12;
+  string country = 13;
+  string carrier = 14;
 
-  bool dynamicConfigChanged = 16;
+  bool dynamicConfigChanged = 15;
 
-  map<string, string> customAttributes = 17;
+  map<string, google.protobuf.Value> customAttributes = 16;
 }
 
 message EventFileRequest {

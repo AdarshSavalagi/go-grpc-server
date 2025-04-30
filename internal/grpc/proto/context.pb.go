@@ -324,7 +324,7 @@ const file_internal_grpc_proto_context_proto_rawDesc = "" +
 	"\x0eContextService\x12*\n" +
 	"\vSendContext\x12\f.log.Context\x1a\r.log.Response\x122\n" +
 	"\x0fSendContextList\x12\x10.log.ContextList\x1a\r.log.Response\x129\n" +
-	"\x0fSendContextFile\x12\x17.log.ContextFileRequest\x1a\r.log.ResponseB(Z&go-grpc-server/internal/grpc/proto;logb\x06proto3"
+	"\x0fSendContextFile\x12\x17.log.ContextFileRequest\x1a\r.log.ResponseB\x19Z\x17internal/grpc/proto;logb\x06proto3"
 
 var (
 	file_internal_grpc_proto_context_proto_rawDescOnce sync.Once
