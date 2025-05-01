@@ -87,9 +87,9 @@ func ConsumeMessages(ctx context.Context, consumer sarama.Consumer, db *gorm.DB,
 									Logs []raw_logs_orm.RawLog `json:"logs"`
 								}
 								if err := json.Unmarshal(msg.Value, &batch); err == nil {
-									for _, logEntry := range batch.Logs {
-										if insertErr := raw_logs_orm.Insert(db, &logEntry); insertErr != nil {
-											log.Printf("❌ Insert error for log UUID %s: %v", logEntry.UUID, insertErr)
+									if len(batch.Logs) > 0 {
+										if insertErr := db.Create(&batch.Logs).Error; insertErr != nil {
+											log.Printf("❌ Bulk insert error for logs: %v", insertErr)
 										}
 									}
 								}
@@ -98,21 +98,21 @@ func ConsumeMessages(ctx context.Context, consumer sarama.Consumer, db *gorm.DB,
 									Contexts []contexts_orm.Context `json:"contexts"`
 								}
 								if err := json.Unmarshal(msg.Value, &batch); err == nil {
-									for _, context := range batch.Contexts {
-										if insertErr := contexts_orm.InsertContext(db, &context); insertErr != nil {
-											log.Printf("❌ Insert error for log UUID %s: %v", context.ContextID, insertErr)
+									if len(batch.Contexts) > 0 {
+										if insertErr := db.Create(&batch.Contexts).Error; insertErr != nil {
+											log.Printf("❌ Bulk insert error for contexts: %v", insertErr)
 										}
 									}
 								}
 
 							case "events-batch":
 								var batch struct {
-									Contexts []events_orm.Event `json:"events"`
+									Events []events_orm.Event `json:"events"`
 								}
 								if err := json.Unmarshal(msg.Value, &batch); err == nil {
-									for _, event := range batch.Contexts {
-										if insertErr := events_orm.Insert(db, &event); insertErr != nil {
-											log.Printf("❌ Insert error for log UUID %s: %v", event.UUID, insertErr)
+									if len(batch.Events) > 0 {
+										if insertErr := db.Create(&batch.Events).Error; insertErr != nil {
+											log.Printf("❌ Bulk insert error for events: %v", insertErr)
 										}
 									}
 								}
