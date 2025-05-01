@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package services;
+
+import "proto/models/log.proto";
+import "proto/models/event.proto";
+import "proto/models/context.proto";
+import "proto/models/common.proto";
+option go_package = "logs-grpc/gen/go/models";
+
+service LoggingService {
+  // === Single Uploads ===
+  rpc UploadLog(models.LogMessage) returns (models.UploadResponse);
+  rpc UploadEvent(models.EventMessage) returns (models.UploadResponse);
+  rpc UploadContext(models.ContextMessage) returns (models.UploadResponse);
+
+  // === Batch Uploads ===
+  rpc UploadLogs(models.LogBatch) returns (models.UploadResponse);
+  rpc UploadEvents(models.EventBatch) returns (models.UploadResponse);
+  rpc UploadContexts(models.ContextBatch) returns (models.UploadResponse);
+
+  // === Streaming Uploads ===
+  rpc StreamLogs(stream models.LogMessage) returns (stream models.UploadResponse);
+  rpc StreamEvents(stream models.EventMessage) returns (stream models.UploadResponse);
+  rpc StreamContexts(stream models.ContextMessage) returns (stream models.UploadResponse);
+
+  rpc UploadLogsFile(models.CompressedFileUpload) returns (models.UploadResponse);
+  rpc UploadEventsFile(models.CompressedFileUpload) returns (models.UploadResponse);
+  rpc UploadContextsFile(models.CompressedFileUpload) returns (models.UploadResponse);
+}

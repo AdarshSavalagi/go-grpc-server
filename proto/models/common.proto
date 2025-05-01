@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package models;
+option go_package = "logs-grpc/gen/go/models";
+message UploadResponse {
+  bool success = 1;
+  string message = 2;
+  bool live_tracking_enabled = 3; 
+}
+
+message CompressedFileUpload {
+  bytes compressed_data = 1;     // gzip/zstd compressed
+  string data_type = 2;          // "log", "event", "context"
+  string compression_type = 3;   // e.g., "gzip"
+}

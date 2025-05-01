@@ -1,0 +1,9 @@
+logs: logs
+events: events
+contexts: contexts
+logs-batch: logs-batch
+events-batch: events-batch
+contexts-batch: contexts-batch
+logs-file: logs-file
+events-file: events-file
+contexts-file: contexts-file

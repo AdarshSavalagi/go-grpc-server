@@ -1,0 +1,28 @@
+syntax = "proto3";
+package models;
+
+option go_package = "logs-grpc/gen/go/models";
+
+import "google/protobuf/timestamp.proto";
+
+enum LogLevel {
+  DEBUG = 0;
+  INFO = 1;
+  WARN = 2;
+  ERROR = 3;
+  CRASH = 4;
+}
+
+message LogMessage {
+  string uuid = 1;
+  string context_id = 2;
+  LogLevel level = 3;
+  string message = 4;
+  string stackTrace = 5;
+  google.protobuf.Timestamp loggedAt = 6;
+  map<string, string> log_properties = 7;
+}
+
+message LogBatch {
+  repeated LogMessage logs = 1;
+}

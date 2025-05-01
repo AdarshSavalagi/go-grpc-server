@@ -1,0 +1,20 @@
+// proto/models/event.proto
+syntax = "proto3";
+package models;
+option go_package = "logs-grpc/gen/go/models";
+import "google/protobuf/timestamp.proto";
+
+
+message EventMessage {
+  string uuid = 1;
+  string context_id = 2; // Reference to pre-uploaded context
+  string event_type = 3;
+  string display_name = 4;
+  string message = 5;
+  google.protobuf.Timestamp eventTime = 6;
+map<string, string>  event_properties = 7;
+}
+
+message EventBatch{
+    repeated EventMessage events = 1;
+}

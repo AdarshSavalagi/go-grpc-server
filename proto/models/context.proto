@@ -1,0 +1,40 @@
+syntax = "proto3";
+package models;
+option go_package = "logs-grpc/gen/go/models";
+import "google/protobuf/timestamp.proto";
+message ContextMessage {
+  string context_id=1;
+  string user_id = 2;
+  string session_id = 3;
+
+  // Device info
+  string device_id = 4;
+  string device_type = 5;
+  string device_family = 6;
+  string device_carrier = 7;
+
+
+  // OS and app info
+  string platform = 8;
+  string os_name = 9;
+  string os_version = 10;
+  int64 app_id = 11;
+  string app_version = 12;
+  string start_version = 13;
+  string sdk_library = 14;
+
+  // Location and locale
+  string language = 15;
+  string ip_address = 16;
+  string city = 17;
+  string region = 18;
+  string country = 19;
+  double location_lat = 20;
+  double location_lng = 21;
+
+  google.protobuf.Timestamp eventTime = 22;
+}
+
+message ContextBatch{
+  repeated ContextMessage contexts = 1;
+}
