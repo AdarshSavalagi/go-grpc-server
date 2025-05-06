@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package models;
 option go_package = "logs-grpc/gen/go/models";
+option java_package = "com.devappsys.log";
 message UploadResponse {
   bool success = 1;
   string message = 2;

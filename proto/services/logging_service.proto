@@ -7,7 +7,7 @@ import "proto/models/event.proto";
 import "proto/models/context.proto";
 import "proto/models/common.proto";
 option go_package = "logs-grpc/gen/go/models";
-
+option java_package = "com.devappsys.log";
 service LoggingService {
   // === Single Uploads ===
   rpc UploadLog(models.LogMessage) returns (models.UploadResponse);

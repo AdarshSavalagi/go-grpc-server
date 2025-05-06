@@ -1,6 +1,7 @@
 syntax = "proto3";
 package models;
 option go_package = "logs-grpc/gen/go/models";
+option java_package = "com.devappsys.log";
 import "google/protobuf/timestamp.proto";
 message ContextMessage {
   string context_id=1;
