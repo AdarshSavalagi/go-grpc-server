@@ -19,7 +19,7 @@ type Context struct {
 	Platform     string `gorm:"column:platform;type:varchar(50)"`
 	OSName       string `gorm:"column:os_name;type:varchar(50)"`
 	OSVersion    string `gorm:"column:os_version;type:varchar(50)"`
-	AppID        int64  `gorm:"column:app_id;type:bigint"`
+	AppID        string  `gorm:"column:app_id;type:varchar(100)"`
 	AppVersion   string `gorm:"column:app_version;type:varchar(50)"`
 	StartVersion string `gorm:"column:start_version;type:varchar(50)"`
 	SDKLibrary   string `gorm:"column:sdk_library;type:varchar(100)"`
