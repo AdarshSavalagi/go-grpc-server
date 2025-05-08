@@ -36,7 +36,7 @@ type ContextMessage struct {
 	Platform     string `protobuf:"bytes,8,opt,name=platform,proto3" json:"platform,omitempty"`
 	OsName       string `protobuf:"bytes,9,opt,name=os_name,json=osName,proto3" json:"os_name,omitempty"`
 	OsVersion    string `protobuf:"bytes,10,opt,name=os_version,json=osVersion,proto3" json:"os_version,omitempty"`
-	AppId        int64  `protobuf:"varint,11,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppId        string `protobuf:"bytes,11,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
 	AppVersion   string `protobuf:"bytes,12,opt,name=app_version,json=appVersion,proto3" json:"app_version,omitempty"`
 	StartVersion string `protobuf:"bytes,13,opt,name=start_version,json=startVersion,proto3" json:"start_version,omitempty"`
 	SdkLibrary   string `protobuf:"bytes,14,opt,name=sdk_library,json=sdkLibrary,proto3" json:"sdk_library,omitempty"`
@@ -153,11 +153,11 @@ func (x *ContextMessage) GetOsVersion() string {
 	return ""
 }
 
-func (x *ContextMessage) GetAppId() int64 {
+func (x *ContextMessage) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
-	return 0
+	return ""
 }
 
 func (x *ContextMessage) GetAppVersion() string {
@@ -302,7 +302,7 @@ const file_proto_models_context_proto_rawDesc = "" +
 	"\n" +
 	"os_version\x18\n" +
 	" \x01(\tR\tosVersion\x12\x15\n" +
-	"\x06app_id\x18\v \x01(\x03R\x05appId\x12\x1f\n" +
+	"\x06app_id\x18\v \x01(\tR\x05appId\x12\x1f\n" +
 	"\vapp_version\x18\f \x01(\tR\n" +
 	"appVersion\x12#\n" +
 	"\rstart_version\x18\r \x01(\tR\fstartVersion\x12\x1f\n" +
@@ -318,7 +318,8 @@ const file_proto_models_context_proto_rawDesc = "" +
 	"\flocation_lng\x18\x15 \x01(\x01R\vlocationLng\x128\n" +
 	"\teventTime\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampR\teventTime\"B\n" +
 	"\fContextBatch\x122\n" +
-	"\bcontexts\x18\x01 \x03(\v2\x16.models.ContextMessageR\bcontextsB\x19Z\x17logs-grpc/gen/go/modelsb\x06proto3"
+	"\bcontexts\x18\x01 \x03(\v2\x16.models.ContextMessageR\bcontextsB,\n" +
+	"\x11com.devappsys.logZ\x17logs-grpc/gen/go/modelsb\x06proto3"
 
 var (
 	file_proto_models_context_proto_rawDescOnce sync.Once

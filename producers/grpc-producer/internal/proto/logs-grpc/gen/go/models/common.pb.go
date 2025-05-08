@@ -153,7 +153,8 @@ const file_proto_models_common_proto_rawDesc = "" +
 	"\x14CompressedFileUpload\x12'\n" +
 	"\x0fcompressed_data\x18\x01 \x01(\fR\x0ecompressedData\x12\x1b\n" +
 	"\tdata_type\x18\x02 \x01(\tR\bdataType\x12)\n" +
-	"\x10compression_type\x18\x03 \x01(\tR\x0fcompressionTypeB\x19Z\x17logs-grpc/gen/go/modelsb\x06proto3"
+	"\x10compression_type\x18\x03 \x01(\tR\x0fcompressionTypeB,\n" +
+	"\x11com.devappsys.logZ\x17logs-grpc/gen/go/modelsb\x06proto3"
 
 var (
 	file_proto_models_common_proto_rawDescOnce sync.Once

@@ -3,12 +3,20 @@ package events_orm
 import (
 	"context"
 	"errors"
+	"log"
 
 	"gorm.io/gorm"
 )
 
 // Insert inserts a single Event into the database.
 func Insert(db *gorm.DB, event *Event) error {
+	if event == nil {
+		return errors.New("event cannot be nil")
+	}
+	if event.ContextID == "" {
+		return errors.New("event ID cannot be empty")
+	}
+	log.Printf("Inserting event %v", event)
 	return db.Create(event).Error
 }
 

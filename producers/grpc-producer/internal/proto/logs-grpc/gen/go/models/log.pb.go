@@ -240,7 +240,8 @@ const file_proto_models_log_proto_rawDesc = "" +
 	"\x04INFO\x10\x01\x12\b\n" +
 	"\x04WARN\x10\x02\x12\t\n" +
 	"\x05ERROR\x10\x03\x12\t\n" +
-	"\x05CRASH\x10\x04B\x19Z\x17logs-grpc/gen/go/modelsb\x06proto3"
+	"\x05CRASH\x10\x04B,\n" +
+	"\x11com.devappsys.logZ\x17logs-grpc/gen/go/modelsb\x06proto3"
 
 var (
 	file_proto_models_log_proto_rawDescOnce sync.Once

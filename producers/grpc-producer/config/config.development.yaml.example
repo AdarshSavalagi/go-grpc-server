@@ -1,0 +1,25 @@
+name: grpc-producer
+description: Logs GRPC server
+owner: DevAppSys
+
+server:
+  port: 50051
+  max-rec-size: 31457280
+  max-send-size: 31457280
+
+kafka:
+  brokers:
+    - kafka:9092
+  retry_attempts: 3
+  buffer_channel_size: 31457280
+  topics:
+    logs: logs
+    events: events
+    contexts: contexts
+    logs-batch: logs-batch
+    events-batch: events-batch
+    contexts-batch: contexts-batch
+    logs-file: logs-file
+    events-file: events-file
+    contexts-file: contexts-file
+    

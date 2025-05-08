@@ -180,7 +180,8 @@ const file_proto_models_event_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\":\n" +
 	"\n" +
 	"EventBatch\x12,\n" +
-	"\x06events\x18\x01 \x03(\v2\x14.models.EventMessageR\x06eventsB\x19Z\x17logs-grpc/gen/go/modelsb\x06proto3"
+	"\x06events\x18\x01 \x03(\v2\x14.models.EventMessageR\x06eventsB,\n" +
+	"\x11com.devappsys.logZ\x17logs-grpc/gen/go/modelsb\x06proto3"
 
 var (
 	file_proto_models_event_proto_rawDescOnce sync.Once

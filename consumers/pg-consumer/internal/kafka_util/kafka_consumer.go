@@ -75,13 +75,26 @@ func ConsumeMessages(ctx context.Context, consumer sarama.Consumer, db *gorm.DB,
 								var event events_orm.Event
 								if err := json.Unmarshal(msg.Value, &event); err == nil {
 									err = events_orm.Insert(db, &event)
+									if err != nil {
+										log.Print("Failed to insert event")
+									}
+								}else{
+									log.Printf("Failed to unmarshal events : %v", err)
+									log.Print("Failed to insert event")
 								}
 
 							case "contexts":
 								var context contexts_orm.Context
 								if err := json.Unmarshal(msg.Value, &context); err == nil {
 									err = contexts_orm.InsertContext(db, &context)
+									if err != nil {
+										log.Printf("Failed to insert context : %v", err)
+									}
+								}else{
+									log.Printf("Failed to unmarshal contexts : %v", err)
 								}
+
+								
 							case "logs-batch":
 								var batch struct {
 									Logs []raw_logs_orm.RawLog `json:"logs"`

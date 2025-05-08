@@ -19,7 +19,7 @@ message ContextMessage {
   string platform = 8;
   string os_name = 9;
   string os_version = 10;
-  int64 app_id = 11;
+  string app_id = 11;
   string app_version = 12;
   string start_version = 13;
   string sdk_library = 14;

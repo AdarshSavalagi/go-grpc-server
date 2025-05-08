@@ -39,7 +39,8 @@ const file_proto_services_logging_service_proto_rawDesc = "" +
 	"\x0eStreamContexts\x12\x16.models.ContextMessage\x1a\x16.models.UploadResponse(\x010\x01\x12F\n" +
 	"\x0eUploadLogsFile\x12\x1c.models.CompressedFileUpload\x1a\x16.models.UploadResponse\x12H\n" +
 	"\x10UploadEventsFile\x12\x1c.models.CompressedFileUpload\x1a\x16.models.UploadResponse\x12J\n" +
-	"\x12UploadContextsFile\x12\x1c.models.CompressedFileUpload\x1a\x16.models.UploadResponseB\x19Z\x17logs-grpc/gen/go/modelsb\x06proto3"
+	"\x12UploadContextsFile\x12\x1c.models.CompressedFileUpload\x1a\x16.models.UploadResponseB,\n" +
+	"\x11com.devappsys.logZ\x17logs-grpc/gen/go/modelsb\x06proto3"
 
 var file_proto_services_logging_service_proto_goTypes = []any{
 	(*LogMessage)(nil),           // 0: models.LogMessage

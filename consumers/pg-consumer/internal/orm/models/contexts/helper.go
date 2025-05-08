@@ -2,12 +2,17 @@ package contexts_orm
 
 import (
 	"errors"
+	"log"
 
 	"gorm.io/gorm"
 )
 
 // InsertContext inserts a new context record
 func InsertContext(db *gorm.DB, ctx *Context) error {
+	if ctx == nil {
+		return errors.New("context cannot be nil")
+	}
+	log.Printf("Inserting context %v", ctx)
 	return db.Create(ctx).Error
 }
 
