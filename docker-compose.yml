@@ -56,14 +56,13 @@ services:
     build:
       context: ./producers/grpc-producer
       dockerfile: Dockerfile
-    container_name: grpc-server
-    ports:
-      - "50051:50051"
     environment:
       KAFKA_BROKER: kafka:9092 
       KAFKA_TOPIC: ${KAFKA_TOPICS}
-    depends_on:
-      - kafka
+    deploy:
+      replicas: 3
+    ports:
+      - "50051-50053:50051"
     networks:
       - kafka-net
 
