@@ -1,84 +1,44 @@
-
+version: '3.8'
 
 services:
 
   ## -------------------------------
-  ## ✅   (Kafka with KRaft)
+  ## ✅   (Kafka with KRaft - Combined Controller & Broker)
   ## -------------------------------
-  kafka-controller:
-    image: bitnami/kafka:4.0.0
-    container_name: kafka-controller
-    environment:
-      - KAFKA_ENABLE_KRAFT=yes
-      - KAFKA_CFG_PROCESS_ROLES=controller
-      - KAFKA_CFG_NODE_ID=1
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=CONTROLLER://0.0.0.0:9093
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-controller:9093
-      - KAFKA_KRAFT_CLUSTER_ID=KraftClusterId12345
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_HEAP_OPTS="-Xms1g -Xmx2g"
-    ports:
-      - "9093:9093"
-    volumes:
-      - kafka_data_controller:/bitnami/kafka
-    networks:
-      - kafka-net
-
-  kafka-broker-1:
-    image: bitnami/kafka:4.0.0
-    container_name: kafka-broker-1
-    environment:
-      - KAFKA_ENABLE_KRAFT=yes
-      - KAFKA_CFG_PROCESS_ROLES=broker
-      - KAFKA_CFG_NODE_ID=2
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-broker-1:9092
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-controller:9093
-      - KAFKA_KRAFT_CLUSTER_ID=KraftClusterId12345
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_NUM_PARTITIONS=10
-      - KAFKA_CFG_MESSAGE_MAX_BYTES=8388608                # 8MB per message
-      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=8388608          # 8MB fetch limit
-      - KAFKA_CFG_LOG_RETENTION_BYTES=10737418240          # 10GB per partition
-      - KAFKA_HEAP_OPTS="-Xms1g -Xmx2g"
+  kafka:
+    image: bitnami/kafka:4.0.0 
     ports:
       - "9092:9092"
-    volumes:
-      - kafka_data_broker_1:/bitnami/kafka
-    networks:
-      - kafka-net
-    depends_on:
-      - kafka-controller
-
-  kafka-broker-2:
-    image: bitnami/kafka:4.0.0
-    container_name: kafka-broker-2
+      - "9093:9093"
+    env_file:
+      - .env
     environment:
       - KAFKA_ENABLE_KRAFT=yes
-      - KAFKA_CFG_PROCESS_ROLES=broker
-      - KAFKA_CFG_NODE_ID=3
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-broker-2:9094
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-controller:9093
-      - KAFKA_KRAFT_CLUSTER_ID=KraftClusterId12345
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_KRAFT_CLUSTER_ID=MyKraftClusterId1234
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_NUM_PARTITIONS=10
-      - KAFKA_CFG_MESSAGE_MAX_BYTES=8388608                # 8MB per message
-      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=8388608          # 8MB fetch limit
-      - KAFKA_CFG_LOG_RETENTION_BYTES=10737418240          # 10GB per partition
-      - KAFKA_HEAP_OPTS="-Xms1g -Xmx2g"
-    ports:
-      - "9094:9094"
+      # Buffer Sizes (Maximizing)
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=104857600 # 100MB (adjust as needed, max might depend on system limits)
+      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=104857600 # Match message max bytes
+      - KAFKA_CFG_FETCH_MAX_BYTES=104857600   # Consumer fetch max (adjust consumer-side as well)
+      - KAFKA_CFG_BUFFER_MEMORY=419430400      # 400MB for producer buffers (adjust JVM heap and needs)
+      - KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES=-1 # Use OS default (potentially max)
+      - KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES=-1 # Use OS default (potentially max)
+      # Kafka Storage (Maximum within Volume)
+      - KAFKA_CFG_LOG_RETENTION_BYTES=-1      # Retain all logs indefinitely (within disk space)
+      # TTL (Time-To-Live) - Configured per topic
+      - KAFKA_CFG_LOG_RETENTION_MS=1200000     # 20 minutes in milliseconds (20 * 60 * 1000)
     volumes:
-      - kafka_data_broker_2:/bitnami/kafka
+      - kafka_data:/bitnami/kafka
     networks:
       - kafka-net
-    depends_on:
-      - kafka-controller
 
   ## -------------------------------
   ## ✅   Consumers
@@ -89,7 +49,7 @@ services:
       dockerfile: Dockerfile
     container_name: pg-consumer
     depends_on:
-      - kafka-controller
+      - kafka
     networks:
       - kafka-net
 
@@ -105,7 +65,7 @@ services:
     deploy:
       replicas: 3
     depends_on:
-      - kafka-controller
+      - kafka
     ports:
       - "50051-50053:50051"
     networks:
@@ -116,6 +76,4 @@ networks:
     driver: bridge
 
 volumes:
-  kafka_data_controller:
-  kafka_data_broker_1:
-  kafka_data_broker_2:
+  kafka_data:

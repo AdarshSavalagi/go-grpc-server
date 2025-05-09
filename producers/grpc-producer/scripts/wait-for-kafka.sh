@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Set default Kafka host and port if not already defined as environment variables
-KAFKA_HOST=${KAFKA_HOST:-kafka-broker-1}
+KAFKA_HOST=${KAFKA_HOST:-kafka}
 KAFKA_PORT=${KAFKA_PORT:-9092}
 
 echo "Waiting for Kafka at $KAFKA_HOST:$KAFKA_PORT..."
